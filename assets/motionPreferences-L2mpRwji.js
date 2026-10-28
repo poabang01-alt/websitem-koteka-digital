@@ -1,0 +1,1 @@
+import{r as e}from"./jsx-runtime-BkSabwWG.js";import{t}from"./react-DHmoMYoq.js";var n=e(t(),1),r=(0,n.createContext)({shouldReduceMotion:!1});function i(){return(0,n.useContext)(r)}export{i as n,r as t};
