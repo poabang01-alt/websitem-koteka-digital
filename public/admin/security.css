@@ -1,0 +1,46 @@
+/* Account Control, Admin Activity Logs and Inbox reply status only. */
+.kd-reply-status{display:inline-flex;align-items:center;gap:5px;width:max-content;max-width:100%;padding:5px 9px;border:1px solid #ebc98a;border-radius:20px;background:#fff7e7;color:#87530b;font-size:10px;font-weight:800;line-height:1.4;white-space:nowrap}
+.kd-reply-status.is-replied{background:#eaf9f1;color:#126443;border-color:#9cd7b8}
+.kd-inbox-card-head .kd-reply-status{margin-top:9px}
+.kd-notice-entry .kd-reply-status{margin-top:5px;font-size:9px;padding:3px 7px}
+.kd-security-table-wrap{overflow-x:auto;max-width:100%}
+.kd-security-table{width:100%;border-collapse:collapse;font-size:12px;text-align:left}
+.kd-security-table th{padding:14px 16px;color:#6f8295;font-size:10px;text-transform:uppercase;letter-spacing:.06em;background:#f5f8fc;border-bottom:1px solid #dfe8f3}
+.kd-security-table td{padding:17px 16px;border-bottom:1px solid #e8eef5;vertical-align:top;overflow-wrap:anywhere}
+.kd-security-table td strong,.kd-security-table td small,.kd-security-table td>span:not(.tag,.kd-account-status){display:block}
+.kd-security-table td small{margin-top:5px;color:#70879b;font-size:11px}
+.kd-security-table tbody tr{transition:background-color .25s}
+.kd-security-table tbody tr:hover{background:#f3f7ff}
+.kd-security-row-actions,.kd-security-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.kd-security-row-actions{min-width:205px}
+.kd-account-status{display:inline-block;padding:5px 9px;background:#f0f3f7;border:1px solid #d8e1eb;border-radius:20px;color:#67768b;font-size:10px;font-weight:800}
+.kd-account-status.is-active{color:#136345;background:#eaf9f1;border-color:#9cd7b8}
+.kd-account-editor{margin-top:22px}
+.kd-security-form{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
+.kd-security-form label,.kd-reply-form label{display:grid;gap:8px;font-size:12px;font-weight:800;line-height:1.6}
+.kd-security-form :is(input:not([type=checkbox]),select),.kd-reply-form textarea{width:100%;min-width:0;padding:12px;border:1px solid #d7e2ef;border-radius:10px;color:#163750;background:#f8fbff;font:inherit;font-weight:400;transition:border-color .25s,box-shadow .25s}
+.kd-security-form :is(input,select):focus-visible,.kd-reply-form :is(textarea,input):focus-visible{outline:2px solid #2373f4;outline-offset:2px;border-color:#2373f4}
+.kd-security-form :is(.kd-security-actions,.kd-security-error){grid-column:1/-1}
+.kd-security-form .kd-security-check,.kd-reply-form .kd-security-check{display:flex;align-items:flex-start;gap:10px;font-weight:600}
+.kd-security-check input{width:17px;height:17px;flex:0 0 17px;margin:2px 0;accent-color:#2373f4}
+.kd-security-error{color:#a33145;background:#fff0f3;border:1px solid #ecc2cc;padding:12px;border-radius:10px;font-size:12px;line-height:1.7}
+.kd-security-muted{color:#70879b;font-size:11px;line-height:1.8}
+.kd-account-confirm{padding:18px;margin-top:20px;background:#fff6ed;border:1px solid #edc99d;border-radius:12px;font-size:13px;line-height:1.7}
+.kd-audit-date{min-width:180px;font-size:11px;line-height:1.7}
+.kd-reply-dialog{width:min(620px,calc(100% - 28px));max-height:90dvh;overflow:auto;padding:0;border:1px solid #d4e2f4;border-radius:22px;color:#173750;background:#fff;box-shadow:0 30px 90px #09274440}
+.kd-reply-dialog::backdrop{background:#071c38a6;backdrop-filter:blur(5px)}
+.kd-reply-form{display:grid;gap:17px;padding:24px}
+.kd-reply-form>p{margin:0;font-size:12px;line-height:1.8;overflow-wrap:anywhere}
+.kd-reply-form textarea{resize:vertical;min-height:130px}
+.kd-reply-form>a{justify-self:start}
+.kd-reply-dialog .dialog-head{position:sticky;top:0;background:inherit;z-index:1}
+.kd-dark :is(.kd-security-panel,.kd-account-editor){background:#10233b;border-color:#28415f;color:#e6efff}
+.kd-dark .kd-security-table th{background:#122b47;color:#b5c9e5;border-color:#28415f}
+.kd-dark .kd-security-table td{border-color:#28415f}
+.kd-dark .kd-security-table tbody tr:hover{background:#17314e}
+.kd-dark :is(.kd-security-muted,.kd-security-table td small){color:#b5c9e5}
+.kd-dark .kd-reply-dialog{background:#10233b;color:#e6efff;border-color:#365778}
+.kd-dark .kd-security-form :is(input:not([type=checkbox]),select),.kd-dark .kd-reply-form textarea{background:#0d1e34;color:#e6efff;border-color:#365778}
+.kd-dark .kd-account-confirm{background:#302819;border-color:#7b6240}
+@media(max-width:740px){.kd-security-form{grid-template-columns:1fr}.kd-security-table th,.kd-security-table td{padding:13px 10px}.kd-reply-form{padding:18px}.kd-reply-dialog .dialog-head h2{font-size:19px}.kd-security-actions .btn{min-height:42px}}
+@media(prefers-reduced-motion:reduce){.kd-security-table tbody tr,.kd-security-form :is(input,select),.kd-reply-form textarea{transition:none}}

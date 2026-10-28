@@ -1,0 +1,9 @@
+/* Shares the approved Koteka Digital editorial layout with all NEW Workspace articles. */
+.article-shell .article-cover{display:block;width:100%;height:clamp(250px,32vw,420px);object-fit:contain;object-position:center;padding:18px 18px 0;background:#071d31;}
+.article-shell .article-cover[hidden]{display:none!important}
+.article-shell .article-body h2{font-weight:800;letter-spacing:-.025em;margin:2.2rem 0 .8rem}
+.article-shell .article-body h3{font-weight:750;margin:1.7rem 0 .65rem}
+.article-shell .article-body ul,.article-shell .article-body ol{margin:1rem 0 1.4rem 1.2rem;padding-left:1rem;line-height:1.85}
+.article-shell .article-body p{line-height:1.95;margin-bottom:1.15rem}
+.kd-article-empty{min-height:55vh;display:flex;flex-direction:column;justify-content:center;align-items:flex-start}
+@media(max-width:680px){.article-shell .article-cover{height:250px}.article-shell .article-body p{line-height:1.8}}

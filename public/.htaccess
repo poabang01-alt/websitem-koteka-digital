@@ -1,0 +1,41 @@
+<IfModule mod_rewrite.c>
+    <IfModule mod_negotiation.c>
+        Options -MultiViews -Indexes
+    </IfModule>
+
+    RewriteEngine On
+
+    # Handle Authorization Header
+    RewriteCond %{HTTP:Authorization} .
+    RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+
+    # Handle X-XSRF-Token Header
+    RewriteCond %{HTTP:x-xsrf-token} .
+    RewriteRule .* - [E=HTTP_X_XSRF_TOKEN:%{HTTP:X-XSRF-Token}]
+
+    # Redirect Trailing Slashes If Not A Folder...
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_URI} (.+)/$
+    RewriteRule ^ %1 [L,R=301]
+
+    # Send Requests To Front Controller...
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteRule ^ index.php [L]
+</IfModule>
+
+# Compress static text assets when the shared host provides these modules.
+<IfModule mod_deflate.c>
+    <IfModule mod_filter.c>
+        <FilesMatch "\.(?:css|js|svg|xml|txt|webmanifest)$">
+            AddOutputFilterByType DEFLATE text/css text/javascript application/javascript image/svg+xml application/xml text/xml text/plain application/manifest+json
+        </FilesMatch>
+    </IfModule>
+</IfModule>
+
+# Revalidate mutable filenames so updates remain visible after deployment.
+<IfModule mod_headers.c>
+    <FilesMatch "\.(?:css|js|svg|xml|txt|webmanifest|woff2?|png|jpe?g|webp|avif|gif|ico|pdf)$">
+        Header set Cache-Control "public, max-age=0, must-revalidate" "expr=%{REQUEST_URI} !~ m#(?:^|/)admin(?:/|$)#"
+    </FilesMatch>
+</IfModule>

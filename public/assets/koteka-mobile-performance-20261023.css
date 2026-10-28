@@ -1,0 +1,56 @@
+/* Koteka Digital public mobile polish, October 2026.
+   Targeted safeguards for small screens and browser zoom. No hover/animation rewrites. */
+@media (max-width: 900px) {
+  #root, #root .page-transition, #root main, #root section,
+  #root .container { min-width: 0; }
+  #root .site-header .nav-shell { max-width: calc(100% - 20px); }
+  #root .nav-menu-mobile {
+    box-sizing: border-box;
+    width: min(360px, calc(100dvw - 16px));
+    max-width: 100%;
+    max-height: calc(100dvh - 24px);
+    overflow-x: clip;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: max(24px, env(safe-area-inset-bottom));
+  }
+  #root .nav-menu-mobile :is(.nav-link,.dropdown-link,.mobile-submenu-toggle) {
+    min-height: 44px;
+    overflow-wrap: anywhere;
+  }
+  #root .nav-menu-mobile :is(.nav-link-label,.dropdown-link) { min-width: 0; }
+  #root .nav-menu-mobile :is(.nav-link,.dropdown-link):focus-visible,
+  #root .mobile-bottom-nav-item:focus-visible {
+    outline: 3px solid #2373f4;
+    outline-offset: -3px;
+  }
+  #root :is(.pricing-package-grid,.kd-pricing-carousel,.kd-pricing-viewport) { min-width: 0; max-width: 100%; }
+  #root :is(.faq-section,.faq-list,.kd-faq-layout,.kd-faq-intro-column) { min-width: 0; }
+  #root :is(.faq-trigger,.faq-question,.faq-answer) { overflow-wrap: anywhere; }
+  #root :is(.contact-form,.contact-form-card,.contact-intro-card,.contact-location-card) { min-width: 0; }
+  #root :is(input,textarea,select) { max-width: 100%; }
+  #root :is(.contact-form,.contact-form-card) :is(input,textarea,select) { font-size: max(16px, 1rem); }
+  #root .hero-section :is(.hero-title,.hero-subtitle),
+  #root :is(.section-heading,.faq-heading,.pricing-header,.contact-heading) :is(h1,h2,h3,p) {
+    overflow-wrap: break-word;
+  }
+}
+@media (max-width: 480px) {
+  #root main :is(.container,.section-container) { max-width: 100%; }
+  #root :is(.faq-item,.contact-card,.pricing-package-card,.pricing-card-reference) { min-width: 0; }
+  #root .nav-overlay-mobile { backdrop-filter: none !important; }
+  #root .kd-pricing-controls { flex-wrap: wrap; gap: 10px; }
+  #root .kd-pricing-arrows { margin-inline-start: auto; }
+  #root :is(.contact-form,.contact-form-card) button[type="submit"] { min-height: 48px; }
+  #root .kd-faq-visual img { width: 100%; height: auto; }
+}
+@media (max-width: 359px) {
+  #root .site-header .brand-text { line-height: 1.15; }
+  #root .hero-section .hero-title { font-size: clamp(1.65rem, 8vw, 1.9rem); }
+  #root .nav-menu-mobile { width: min(320px, calc(100dvw - 12px)); }
+}
+@media (prefers-reduced-motion: reduce) {
+  #root .nav-menu-mobile, #root .nav-overlay-mobile,
+  #root .kd-pricing-viewport { scroll-behavior: auto; }
+}
