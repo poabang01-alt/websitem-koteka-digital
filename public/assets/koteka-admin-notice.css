@@ -1,0 +1,12 @@
+body {
+    font: 18px system-ui;
+    background: #071e38;
+    color: #ffffff;
+    max-width: 600px;
+    margin: 15vh auto;
+    padding: 30px;
+}
+
+a {
+    color: skyblue;
+}

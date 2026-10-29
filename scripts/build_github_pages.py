@@ -114,12 +114,13 @@ admin_html = f'''<!doctype html>
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex">
 <title>Workspace Koteka Digital</title>
+<link rel="stylesheet" href="{BASE}/assets/koteka-admin-notice.css">
 </head>
-<body style="font:18px system-ui;background:#071e38;color:white;max-width:600px;margin:15vh auto;padding:30px">
+<body>
 <h1>Workspace memerlukan Laravel</h1>
 <p>GitHub Pages hanya menyediakan preview website publik.
 Login Admin, Super Admin, API, dan database tidak berjalan di sini.</p>
-<a style="color:skyblue" href="{BASE}/">Kembali ke website</a>
+<a href="{BASE}/">Kembali ke website</a>
 </body>
 </html>'''
 
