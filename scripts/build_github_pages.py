@@ -1,4 +1,4 @@
-﻿from pathlib import Path
+from pathlib import Path
 import json
 import re
 import shutil
@@ -28,21 +28,7 @@ def patch_html(source):
 
     injection = rf'''<base href="{BASE}/">
 <meta name="robots" content="noindex,nofollow">
-<script>
-document.addEventListener('click', function(e) {{
-    if(e.defaultPrevented || e.button !== 0 ||
-       e.ctrlKey || e.metaKey || e.shiftKey || e.altKey) return;
-    const a = e.target.closest('a[href]');
-    if(!a || a.target === '_blank' || a.hasAttribute('download')) return;
-    const u = new URL(a.href, location.href);
-    if(u.origin !== location.origin ||
-       u.pathname.startsWith('{BASE}/')) return;
-    if(!(/^\/(?:$|layanan(?:\/|$)|portofolio(?:\/|$)|blog(?:\/|$)|privacy-policy(?:\/|$)|admin(?:\/|$))/.test(u.pathname))) return;
-    e.preventDefault();
-    e.stopImmediatePropagation();
-    location.assign('{BASE}' + u.pathname + u.search + u.hash);
-}}, true);
-</script>'''
+<script defer src="{BASE}/assets/koteka-pages-navigation.js"></script>'''
 
     result, count = re.subn(
         r'<head(\s[^>]*)?>',

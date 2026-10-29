@@ -3,21 +3,7 @@
 <html lang="id">
 <head><base href="/websitem-koteka-digital/">
 <meta name="robots" content="noindex,nofollow">
-<script>
-document.addEventListener('click', function(e) {
-    if(e.defaultPrevented || e.button !== 0 ||
-       e.ctrlKey || e.metaKey || e.shiftKey || e.altKey) return;
-    const a = e.target.closest('a[href]');
-    if(!a || a.target === '_blank' || a.hasAttribute('download')) return;
-    const u = new URL(a.href, location.href);
-    if(u.origin !== location.origin ||
-       u.pathname.startsWith('/websitem-koteka-digital/')) return;
-    if(!(/^\/(?:$|layanan(?:\/|$)|portofolio(?:\/|$)|blog(?:\/|$)|privacy-policy(?:\/|$)|admin(?:\/|$))/.test(u.pathname))) return;
-    e.preventDefault();
-    e.stopImmediatePropagation();
-    location.assign('/websitem-koteka-digital' + u.pathname + u.search + u.hash);
-}, true);
-</script>
+<script defer src="/websitem-koteka-digital/assets/koteka-pages-navigation.js"></script>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>Studi Kasus Website UMKM Papua | Koteka Digital</title>
