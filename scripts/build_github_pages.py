@@ -77,7 +77,10 @@ for name in (
     "offline.html", "manifest.webmanifest", "sw.js"
 ):
     if (PUBLIC / name).is_file():
-        shutil.copy2(PUBLIC / name, OUT / name)
+        if name == "offline.html":
+            write(OUT / name, rebase((PUBLIC / name).read_text(encoding="utf-8")))
+        else:
+            shutil.copy2(PUBLIC / name, OUT / name)
 
 for file in OUT.rglob("*"):
     if not file.is_file():
