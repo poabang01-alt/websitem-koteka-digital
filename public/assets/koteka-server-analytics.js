@@ -22,6 +22,7 @@
    window.addEventListener('popstate',visit);window.addEventListener('kotekadigital:navigation-change',visit);
    return;
  }
+ S.refresh=refresh;
  let running=false,identity=null,lastTraffic=null,lastActivities=null;
  const resetSnapshots=()=>{identity=null;lastTraffic=null;lastActivities=null;};
  async function refresh(){

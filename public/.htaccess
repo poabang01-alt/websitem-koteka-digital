@@ -1,9 +1,16 @@
+Options -Indexes
+
+<FilesMatch "(?i)^\.(?!well-known$)|\.(?:sqlite(?:3)?(?:-wal|-shm)?|db|sql|log|bak|backup|key|pem|env)$">
+    Require all denied
+</FilesMatch>
+
 <IfModule mod_rewrite.c>
     <IfModule mod_negotiation.c>
         Options -MultiViews -Indexes
     </IfModule>
 
     RewriteEngine On
+    RewriteRule (^|/)\.(?!well-known(?:/|$)) - [F,L]
 
     # Handle Authorization Header
     RewriteCond %{HTTP:Authorization} .
@@ -35,6 +42,9 @@
 
 # Revalidate mutable filenames so updates remain visible after deployment.
 <IfModule mod_headers.c>
+    Header always set X-Content-Type-Options "nosniff"
+    Header always set X-Frame-Options "DENY"
+    Header always set Referrer-Policy "strict-origin-when-cross-origin"
     <FilesMatch "\.(?:css|js|svg|xml|txt|webmanifest|woff2?|png|jpe?g|webp|avif|gif|ico|pdf)$">
         Header set Cache-Control "public, max-age=0, must-revalidate" "expr=%{REQUEST_URI} !~ m#(?:^|/)admin(?:/|$)#"
     </FilesMatch>

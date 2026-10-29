@@ -1,0 +1,13 @@
+Options -Indexes
+
+# Defence in depth if the repository is accidentally placed below a web root.
+# The production document root must still be the public directory.
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteRule (^|/)\.(?!well-known(?:/|$)) - [F,L]
+    RewriteRule ^(?:app|bootstrap|config|database|resources|routes|storage|tests|vendor|scripts|_site)(?:/|$) - [F,L,NC]
+</IfModule>
+
+<FilesMatch "(?i)^(?:\.|artisan$|composer\.(?:json|lock)$|package(?:-lock)?\.json$|(?:AGENTS|CLAUDE|README|SECURITY_AUDIT)\.md$)|\.(?:sqlite(?:3)?(?:-wal|-shm)?|db|sql|log|bak|backup|key|pem)$">
+    Require all denied
+</FilesMatch>

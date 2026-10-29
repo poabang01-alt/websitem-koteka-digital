@@ -1,5 +1,7 @@
 <?php
+
 return [
+    'trusted_proxies' => array_values(array_filter(array_map('trim', explode(',', (string) env('KOTEKA_TRUSTED_PROXIES', ''))))),
     'resend_api_key' => env('RESEND_API_KEY'),
     'from_email' => env('KOTEKA_FROM_EMAIL'),
     'notify_email' => env('KOTEKA_NOTIFY_EMAIL'),

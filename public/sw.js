@@ -1,6 +1,6 @@
 /* Koteka Digital: bounded, same-origin, static-public-content PWA cache. */
 'use strict';
-const VERSION = 'v26-deploy-audit-20261028';
+const VERSION = 'v29-deploy-readiness-20261029';
 const PREFIX = 'koteka-digital-';
 const SHELL_CACHE = `${PREFIX}shell-${VERSION}`;
 const STATIC_CACHE = `${PREFIX}static-${VERSION}`;
@@ -15,6 +15,8 @@ const SHELL_URLS = [
   `${BASE}/manifest.webmanifest`,
   `${BASE}/assets/index-B3BNhf1J.js`,
   `${BASE}/assets/public-entry.js`,
+  `${BASE}/assets/public-runtime.js`,
+  `${BASE}/assets/koteka-interactions.css`,
   `${BASE}/assets/koteka-workspace-sync.js`,
   `${BASE}/assets/kd-de0747668b.css`,
   `${BASE}/assets/kd-37f189b118.js`,
@@ -75,7 +77,8 @@ const staticAsset = async (request) => {
   // Recognize this build's Vite IDs and hex hashes, not dates or editorial filenames.
   const suffix = assetName.match(/-([A-Za-z0-9_-]{8}|[a-f0-9]{10})\.(?:js|css)$/)?.[1];
   const generated = suffix && (suffix.length === 8 ? /[A-Z]/.test(suffix) : /[a-f]/.test(suffix));
-  if (generated) {
+  const patchedBuildAsset = /^(?:index-B3BNhf1J\.js|appBoot-634c31a5ba\.js|Reveal-a4c48c8478\.js|PricingSectionContainer-CyXKa1Eh\.js|kd-37f189b118\.js|kd-de0747668b\.css)$/.test(assetName);
+  if (generated && !patchedBuildAsset) {
     const hit = await cache.match(request);
     if (hit) return hit;
   }

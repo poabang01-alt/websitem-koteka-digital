@@ -1,0 +1,25 @@
+{
+  "name": "Koteka Digital",
+  "short_name": "Koteka Digital",
+  "description": "Jasa pembuatan website profesional di Jayapura, Papua.",
+  "lang": "id-ID",
+  "start_url": "/websitem-koteka-digital/",
+  "display": "standalone",
+  "theme_color": "#0b3a5b",
+  "background_color": "#0b3a5b",
+  "icons": [
+    {
+      "src": "/websitem-koteka-digital/img/koteka-app-icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/websitem-koteka-digital/img/koteka-app-icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "scope": "/websitem-koteka-digital/"
+}

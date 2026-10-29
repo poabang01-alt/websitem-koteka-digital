@@ -4,16 +4,17 @@ namespace App\Http\Controllers\Koteka;
 
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
-use Illuminate\Support\Facades\{DB, RateLimiter};
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\RateLimiter;
 
 /** Lightweight, first-party page-view counter. No IP or user-agent is persisted. */
 class VisitController extends Controller
 {
     public function handle(Request $request)
     {
-        if ($request->isMethod('get')) {
-            if (!AccessController::actor($request)) {
+        if ($request->isMethodSafe()) {
+            if (! AccessController::actor($request)) {
                 return AccessController::jsonError(401, 'Login Workspace diperlukan.');
             }
             $items = DB::table('koteka_visit_events')
@@ -21,6 +22,7 @@ class VisitController extends Controller
                 ->orderByDesc('visited_at')->limit(5001)
                 ->get(['id', 'page', 'channel', 'device', 'session_key', 'visited_at']);
             $truncated = $items->count() > 5000;
+
             return response()->json([
                 'items' => $items->take(5000)->map(fn ($v) => [
                     'id' => $v->id,
@@ -47,7 +49,7 @@ class VisitController extends Controller
         ]);
         // Never persist query strings or fragments (they may contain sensitive data).
         $path = parse_url($input['page'], PHP_URL_PATH);
-        if (!is_string($path) || !str_starts_with($path, '/') || str_starts_with($path, '//')) {
+        if (! is_string($path) || ! str_starts_with($path, '/') || str_starts_with($path, '//')) {
             return AccessController::jsonError(422, 'Halaman tidak valid.');
         }
         if (preg_match('~^/admin(?:/|$)~i', $path)) {
@@ -61,6 +63,7 @@ class VisitController extends Controller
             'channel' => $input['channel'], 'device' => $input['device'],
             'visited_at' => now(),
         ]);
+
         return response()->json(['ok' => true, 'tracked' => (bool) $inserted], $inserted ? 201 : 200)
             ->header('Cache-Control', 'no-store');
     }

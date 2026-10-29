@@ -1,0 +1,146 @@
+﻿from pathlib import Path
+import json
+import re
+import shutil
+
+ROOT = Path(__file__).resolve().parents[1]
+PUBLIC = ROOT / "public"
+PAGES = ROOT / "resources/koteka/pages"
+OUT = ROOT / "_site"
+BASE = "/websitem-koteka-digital"
+
+PATTERN = re.compile(
+    r"""(["'`(=\s])/(assets|img|downloads|blog|layanan|portofolio|privacy-policy|admin|favicon\.ico|favicon\.png|manifest\.webmanifest|icons\.svg|offline\.html)(?=[/?#"'`\s)]|$)"""
+)
+
+def rebase(text):
+    return PATTERN.sub(
+        lambda m: m.group(1) + BASE + "/" + m.group(2),
+        text
+    )
+
+def write(path, content):
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(content, encoding="utf-8")
+
+def patch_html(source):
+    source = rebase(source)
+
+    injection = rf'''<base href="{BASE}/">
+<meta name="robots" content="noindex,nofollow">
+<script>
+document.addEventListener('click', function(e) {{
+    if(e.defaultPrevented || e.button !== 0 ||
+       e.ctrlKey || e.metaKey || e.shiftKey || e.altKey) return;
+    const a = e.target.closest('a[href]');
+    if(!a || a.target === '_blank' || a.hasAttribute('download')) return;
+    const u = new URL(a.href, location.href);
+    if(u.origin !== location.origin ||
+       u.pathname.startsWith('{BASE}/')) return;
+    if(!(/^\/(?:$|layanan(?:\/|$)|portofolio(?:\/|$)|blog(?:\/|$)|privacy-policy(?:\/|$)|admin(?:\/|$))/.test(u.pathname))) return;
+    e.preventDefault();
+    e.stopImmediatePropagation();
+    location.assign('{BASE}' + u.pathname + u.search + u.hash);
+}}, true);
+</script>'''
+
+    result, count = re.subn(
+        r'<head(\s[^>]*)?>',
+        lambda m: m.group(0) + injection,
+        source,
+        count=1,
+        flags=re.I
+    )
+    if count != 1:
+        raise RuntimeError("HTML tidak memiliki elemen head")
+    return result
+
+if not (PAGES / "index.html").is_file():
+    raise SystemExit("Sumber website publik tidak ditemukan")
+
+if not (PUBLIC / "assets/public-entry.js").is_file():
+    raise SystemExit("Aset React public-entry.js tidak ditemukan")
+
+# Folder _site khusus hasil build dan akan dibuat ulang.
+if OUT.exists():
+    shutil.rmtree(OUT)
+OUT.mkdir()
+
+for file in PAGES.rglob("*.html"):
+    relative = file.relative_to(PAGES)
+    if relative.parts[0] == "admin":
+        continue
+    write(
+        OUT / relative,
+        patch_html(file.read_text(encoding="utf-8"))
+    )
+
+for folder in ("assets", "img", "downloads"):
+    if (PUBLIC / folder).is_dir():
+        shutil.copytree(PUBLIC / folder, OUT / folder)
+
+for file in (PUBLIC / "blog").rglob("*.css"):
+    target = OUT / "blog" / file.relative_to(PUBLIC / "blog")
+    target.parent.mkdir(parents=True, exist_ok=True)
+    shutil.copy2(file, target)
+
+for name in (
+    "favicon.ico", "favicon.png", "icons.svg",
+    "offline.html", "manifest.webmanifest"
+):
+    if (PUBLIC / name).is_file():
+        shutil.copy2(PUBLIC / name, OUT / name)
+
+for file in OUT.rglob("*"):
+    if not file.is_file():
+        continue
+    if file.suffix.lower() not in (".js", ".css", ".webmanifest"):
+        continue
+
+    content = rebase(file.read_text(encoding="utf-8"))
+
+    if file.relative_to(OUT).as_posix() == "assets/public-entry.js":
+        marker = "export function publicPath(pathname) {"
+        if marker not in content:
+            raise SystemExit("Struktur React berubah; build dihentikan")
+        replacement = (
+            marker +
+            "\nconst root='" + BASE + "';" +
+            "if(pathname===root||pathname.startsWith(root+'/'))" +
+            "pathname=pathname.slice(root.length)||'/';"
+        )
+        content = content.replace(marker, replacement, 1)
+
+    if file.suffix.lower() == ".webmanifest":
+        manifest = json.loads(content)
+        manifest["start_url"] = BASE + "/"
+        manifest["scope"] = BASE + "/"
+        content = json.dumps(manifest, ensure_ascii=False, indent=2)
+
+    file.write_text(content, encoding="utf-8")
+
+admin_html = f'''<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Workspace Koteka Digital</title>
+</head>
+<body style="font:18px system-ui;background:#071e38;color:white;max-width:600px;margin:15vh auto;padding:30px">
+<h1>Workspace memerlukan Laravel</h1>
+<p>GitHub Pages hanya menyediakan preview website publik.
+Login Admin, Super Admin, API, dan database tidak berjalan di sini.</p>
+<a style="color:skyblue" href="{BASE}/">Kembali ke website</a>
+</body>
+</html>'''
+
+write(OUT / "admin/index.html", admin_html)
+write(OUT / ".nojekyll", "")
+
+total = sum(p.is_file() for p in OUT.rglob("*"))
+
+print("BUILD BERHASIL")
+print("Lokasi:", OUT)
+print("Total file publik:", total)
+print("GitHub Pages:", BASE + "/")

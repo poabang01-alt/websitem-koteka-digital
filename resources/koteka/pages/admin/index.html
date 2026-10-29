@@ -19,6 +19,8 @@
 <script src="./security-ui.js?v=20261022-prebackend" defer></script>
 <script src="./app.js?v=20261028-performance" defer></script>
 <script src="./dialog-accessibility.js?v=20261022-readiness" defer></script>
+<link rel="stylesheet" href="/assets/koteka-interactions.css">
+<script defer src="/assets/kd-37f189b118.js"></script>
 </head>
 <body>
 <section id="loginScreen" class="login-layout" aria-label="Masuk Koteka Workspace">
@@ -73,7 +75,6 @@
 <div id="dialogBackdrop" class="modal-backdrop" hidden><section class="dialog" role="dialog" aria-modal="true" aria-labelledby="dialogTitle"><div class="dialog-head"><div><span class="overline">CONTENT EDITOR</span><h2 id="dialogTitle"></h2></div><button id="dialogClose" class="icon-button" aria-label="Tutup form">×</button></div><form id="editForm" class="dialog-body"></form></section></div>
 <div id="confirmBackdrop" class="modal-backdrop confirm-layer" hidden><section class="confirm-panel" role="alertdialog" aria-modal="true" aria-labelledby="confirmTitle"><div class="warning-circle">!</div><h2 id="confirmTitle">Hapus data?</h2><p id="confirmText">Data ini akan dihapus dari Workspace.</p><div class="confirm-actions"><button id="cancelDelete" class="btn btn-light">Batal</button><button id="approveDelete" class="btn btn-danger">Ya, hapus data</button></div></section></div>
 <div id="profileBackdrop" class="modal-backdrop" hidden><section class="dialog profile-dialog" role="dialog" aria-modal="true" aria-labelledby="profileDialogTitle"><div class="dialog-head"><div><span class="overline">KOTEKA DIGITAL</span><h2 id="profileDialogTitle">Profil Administrator</h2></div><button id="profileDialogClose" type="button" class="icon-button" aria-label="Tutup profil"><i class="fa-solid fa-xmark" aria-hidden="true"></i></button></div><div class="profile-body" id="profileView"></div><form id="profileEditForm" class="profile-edit-form" hidden><div class="profile-picture-edit"><span class="avatar avatar-large" id="profileEditAvatar">KD</span><div><label class="btn btn-light" for="profilePhoto"><i class="fa-solid fa-camera" aria-hidden="true"></i> Ganti foto</label><input id="profilePhoto" type="file" accept="image/png,image/jpeg,image/webp" hidden><p>JPG, PNG atau WebP • maksimum 5 MB</p><button id="profileRemovePhoto" type="button" class="small-link">Hapus foto</button></div></div><div class="profile-form-grid"><label>Nama lengkap<input id="profileName" name="name" type="text" required maxlength="80"></label><label>Email<input id="profileEmail" name="email" type="email" required maxlength="120"></label><label>No. telepon<input id="profilePhone" name="phone" type="tel" maxlength="40"></label><label>Jabatan<input id="profileRole" name="role" type="text" maxlength="65"></label><label class="full">Bio singkat<textarea id="profileBio" name="bio" rows="3" maxlength="300"></textarea></label></div><div class="dialog-actions"><button id="profileCancelEdit" type="button" class="btn btn-light">Batal</button><button type="submit" class="btn btn-primary"><i class="fa-solid fa-check" aria-hidden="true"></i> Simpan Profil</button></div></form></section></div>
-<input id="trafficImportFile" type="file" accept=".csv,.json,text/csv,application/json" hidden aria-label="Impor data analitik">
 <div id="toastContainer" class="toast-container" role="status" aria-live="polite"></div>
 </body>
 </html>

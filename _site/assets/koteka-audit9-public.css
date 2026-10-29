@@ -1,0 +1,488 @@
+/* Audit 9: public controls, mobile spacing and scroll-ready pricing carousel. */
+.kd-pricing-carousel{max-width:100%;min-width:0;position:relative;margin-top:14px}
+.kd-pricing-controls{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:12px 0 18px;color:#416282;font:500 13px/1.6 Poppins,system-ui,sans-serif}
+.kd-pricing-arrows{display:flex;gap:8px;flex-shrink:0}
+.kd-price-arrow{width:44px;height:44px;border-radius:14px;border:1px solid #9cc4fa;background:#edf5ff;color:#1461cb;display:inline-grid;place-items:center;cursor:pointer;box-shadow:0 5px 17px rgba(24,96,184,.09);transition:background-color .2s,color .2s,box-shadow .2s,transform .2s}
+.kd-price-arrow:hover,.kd-price-arrow:focus-visible{background:#2373f4;color:#fff;box-shadow:0 7px 20px rgba(35,115,244,.22)}
+.kd-price-arrow:active{transform:scale(.94)}
+.kd-pricing-viewport{overflow-x:auto;overflow-y:clip;max-width:100%;-webkit-overflow-scrolling:touch;overscroll-behavior-inline:contain;scrollbar-width:none;touch-action:pan-x pan-y}
+.kd-pricing-viewport::-webkit-scrollbar{display:none}
+.kd-pricing-viewport .pricing-package-grid{display:flex!important;flex-wrap:nowrap!important;align-items:flex-start!important;justify-content:flex-start!important;width:max-content!important;min-width:100%!important;max-width:none!important;gap:22px!important;padding:12px 6px 20px!important;grid-template-columns:none!important}
+.kd-pricing-viewport .pricing-card-reference{flex:0 0 clamp(280px,calc((100vw - 170px)/3),370px)!important;width:clamp(280px,calc((100vw - 170px)/3),370px)!important;min-width:0!important;max-width:none!important;margin:0!important;align-self:flex-start;box-sizing:border-box;display:flex!important;flex-direction:column;height:860px!important;min-height:0!important;gap:12px!important;transform:none!important}
+.kd-pricing-viewport .pricing-card-content{flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain;scrollbar-width:thin;padding:0 8px 8px 0;overflow-wrap:anywhere}
+.kd-pricing-viewport .pricing-card-content:focus-visible{outline:2px solid #2373f4;outline-offset:-2px;border-radius:8px}
+.kd-pricing-viewport .pricing-card-content .pricing-copy{min-height:0;margin:8px 0 16px}
+.kd-pricing-viewport .pricing-card-content .pricing-details{min-height:0;margin:16px 0}
+.kd-pricing-viewport .pricing-card-content .price{white-space:normal;overflow-wrap:anywhere}
+.kd-pricing-viewport .pricing-card-content img{width:100%;height:150px;object-fit:cover;border-radius:12px;margin-bottom:12px}
+.kd-pricing-viewport .pricing-card-content .pricing-plan-tag{display:block;text-align:center;font-size:12px;color:#416282;margin:6px 0}
+.kd-pricing-viewport .pricing-card-content .pricing-feature-list{margin-top:16px}
+.kd-pricing-viewport .pricing-card-reference .pricing-actions{flex-shrink:0;margin-top:auto}
+#root .pricing-section .kd-pricing-viewport .pricing-card-reference{transform:none!important}
+@media (min-width:1100px){.site-header .nav-shell{gap:12px}}
+@media (max-width:1050px){.kd-pricing-viewport .pricing-card-reference{flex-basis:min(345px,80vw)!important;width:min(345px,80vw)!important}}
+@media (max-width:700px){
+ html,body{max-width:100%;overflow-x:clip}
+ #root{min-width:0;overflow-x:clip}
+ .site-header .nav-shell{gap:8px;min-width:0;padding-left:15px;padding-right:15px}
+ .site-header .app-install-button{display:none!important}
+ .site-header .hamburger{flex-shrink:0}
+ .nav-menu-mobile{max-width:min(360px,94vw)!important}
+ .pricing-section .container{padding-left:16px;padding-right:16px;min-width:0}
+ .kd-pricing-controls{font-size:11px;line-height:1.5;gap:8px}
+ .kd-price-arrow{width:42px;height:42px;border-radius:12px}
+ .kd-pricing-viewport .pricing-package-grid{gap:16px!important}
+ .kd-pricing-viewport .pricing-card-reference{flex-basis:min(330px,84vw)!important;width:min(330px,84vw)!important}
+ section[id]{scroll-margin-top:94px}
+ .contact-form-grid{min-width:0}
+ .contact-field input,.contact-field select,.contact-field textarea{min-width:0;max-width:100%;font-size:16px}
+ .pricing-comparison-card,.contact-card{max-width:100%;min-width:0}
+}
+@media (max-width:380px){.site-header .nav-shell{gap:6px;padding-inline:10px}.kd-pricing-viewport .pricing-card-reference{flex-basis:84vw!important;width:84vw!important}}
+@media(prefers-reduced-motion:reduce){.kd-price-arrow{transition:none!important}.kd-pricing-viewport{scroll-behavior:auto}}
+.contact-form .form-status.warning{color:#ffe49b;background:#59461b;border:1px solid #ba943e;border-radius:12px;padding:12px 14px;line-height:1.7}
+.contact-form .form-status.success{color:#bff4d5;background:#123e32;border:1px solid #428867;border-radius:12px;padding:12px 14px;line-height:1.7}
+.contact-form .form-status.error{color:#ffd1d7;background:#502635;border:1px solid #b16a7c;border-radius:12px;padding:12px 14px;line-height:1.7}
+/* Status text must stay readable against the public card's global paragraph styles. */
+#root .contact-form .form-status.success{color:#14532d!important;background:#f0fdf4!important;border-color:#86b89a}
+#root .contact-form .form-status.warning{color:#713f12!important;background:#fffbeb!important;border-color:#d6b86b}
+#root .contact-form .form-status.error{color:#881337!important;background:#fff1f2!important;border-color:#e4a0ae}
+/* Oct 20 audit - strictly scoped to public FAQ and public Contact section. */
+#root .faq-section{background:linear-gradient(125deg,#06162d 0%,#0c2e5b 54%,#071e3e 100%);padding:clamp(65px,7vw,110px) 0}
+#root .faq-section .kd-faq-layout{display:grid;grid-template-columns:minmax(0,.95fr) minmax(0,1.08fr);gap:clamp(24px,4vw,76px);align-items:center;max-width:1340px}
+#root .faq-section .kd-faq-intro-column{min-width:0}
+#root .faq-section .faq-heading{max-width:560px;text-align:left;margin:0 0 28px}
+#root .faq-section .faq-heading h2{font-size:clamp(30px,3.6vw,53px);line-height:1.17;letter-spacing:-.045em;margin-top:14px;color:#fff}
+#root .faq-section .faq-heading p{font-size:clamp(14px,1.2vw,17px);color:#d0e3fb;line-height:1.85;max-width:510px}
+#root .faq-section .kd-faq-visual{display:block;margin:0;overflow:hidden;position:relative;border-radius:26px;border:1px solid #7dafe450;box-shadow:0 26px 60px #02102570;aspect-ratio:1.47;background:#0e3155}
+#root .faq-section .kd-faq-visual img{width:100%;height:100%;display:block;object-fit:cover;object-position:center;filter:saturate(.89)}
+#root .faq-section .kd-faq-visual::after{content:'';position:absolute;inset:0;pointer-events:none;background:linear-gradient(180deg,transparent 68%,#061a3666)}
+#root .faq-section .faq-list{min-width:0;display:flex;flex-direction:column;gap:14px;align-self:center}
+#root .faq-section .faq-item{margin:0;background:#ffffff0f;border:1px solid #b8d7ff35;border-radius:18px;box-shadow:0 9px 22px #00102a30;transition:background-color .2s,border-color .2s,box-shadow .2s}
+#root .faq-section .faq-item:hover,#root .faq-section .faq-item:focus-within,#root .faq-section .faq-item.open{background:#ffffff1b;border-color:#89b7ff8a;box-shadow:0 13px 30px #00102a40}
+#root .faq-section .faq-trigger{padding:20px 22px;gap:15px}
+#root .faq-section .faq-question{font-size:clamp(13px,1.07vw,16px);line-height:1.55;color:#f7fbff}
+#root .faq-section .faq-icon{flex:0 0 34px;width:34px;height:34px;background:#2073f431;color:#8cc1ff;border:1px solid #75b0ff77}
+#root .faq-section .faq-item.open .faq-icon{background:#2373f4;color:#fff;border-color:#2373f4}
+#root .faq-section .faq-answer p{font-size:14px;line-height:1.86;color:#d6e8fc;padding:0 23px 23px}
+/* Contact is reflowed without changing the underlying form behavior or submitted fields. */
+#root .contact-section{background:linear-gradient(180deg,#f5faff 0%,#e3efff 76%,#f5faff 100%);color:#09182e;padding:clamp(64px,6vw,100px) 0;position:relative;isolation:isolate}
+#root .contact-section::before{content:'';position:absolute;z-index:-1;inset:0 0 auto auto;width:min(58%,890px);height:min(450px,42vw);background:url('/websitem-koteka-digital/img/contact-reference-hero.webp') center right / cover no-repeat;opacity:.92;mask-image:linear-gradient(to right,transparent,#000 30%);-webkit-mask-image:linear-gradient(to right,transparent,#000 30%)}
+#root .contact-section::after{content:'';position:absolute;z-index:-1;inset:auto 0 0 0;height:200px;pointer-events:none;background:linear-gradient(150deg,transparent 8%,#328cfd24 8% 25%,transparent 25% 49%,#5aa0fa20 49% 68%,transparent 68%)}
+#root .contact-section>.container{max-width:1450px;position:relative;z-index:1}
+#root .contact-section .contact-heading{max-width:780px;margin-bottom:18px;text-align:left}
+#root .contact-section .contact-heading .eyebrow{color:#095edb!important;background:#f6fbff!important;border:1px solid #2373f4!important;box-shadow:none;font-weight:800}
+#root .contact-section .contact-heading h2{color:#06152c!important;font-size:clamp(34px,4.2vw,61px);line-height:1.06;letter-spacing:-.047em;text-shadow:none!important;max-width:750px;margin-top:15px}
+#root .contact-section .contact-heading h2 span:first-child{color:#07142a}
+#root .contact-section .contact-heading h2 span:last-child,#root .contact-section .contact-highlight{color:#0865ee!important}
+#root .contact-section .contact-heading p{color:#425878!important;font-size:clamp(14px,1.1vw,17px);line-height:1.72;max-width:650px}
+#root .contact-section .kd-contact-perks{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:0;max-width:1100px;margin:22px 0 24px}
+#root .contact-section .kd-contact-perk{display:flex;align-items:center;gap:14px;padding:12px 16px;border-right:1px solid #bed6f5;min-width:0}
+#root .contact-section .kd-contact-perk:last-child{border-right:0}
+#root .contact-section .kd-contact-perk-icon{display:grid;place-items:center;flex:0 0 55px;width:55px;height:55px;border-radius:50%;font-size:23px;color:#0769f4;background:linear-gradient(135deg,#d1e7ff,#f6fbff);box-shadow:0 5px 12px #408af324}
+#root .contact-section .kd-contact-perk:nth-child(2) .kd-contact-perk-icon{background:#d7faf2;color:#06a87d}
+#root .contact-section .kd-contact-perk:nth-child(3) .kd-contact-perk-icon{background:#fff1c1;color:#c47b00}
+#root .contact-section .kd-contact-perk:nth-child(4) .kd-contact-perk-icon{background:#f0e3ff;color:#7d3bf2}
+#root .contact-section .kd-contact-perk strong{display:block;color:#0b1b34;font-size:14px;font-weight:800;line-height:1.35}
+#root .contact-section .kd-contact-perk span:not(.kd-contact-perk-icon){display:block;color:#455c7c;font-size:12px;line-height:1.55;margin-top:2px}
+#root .contact-section .contact-main-grid{display:flex!important;flex-direction:column;gap:14px!important;max-width:none;background:transparent!important;box-shadow:none!important;border:0!important;overflow:visible!important;border-radius:0}
+#root .contact-section .contact-left-column{display:contents!important}
+#root .contact-section .contact-intro-card{display:none!important}
+#root .contact-section .contact-form-card,#root .contact-section .contact-location-card{width:100%;max-width:none;background:#fffffff5!important;border:1px solid #d4e5ff!important;border-radius:22px!important;box-shadow:0 16px 36px #1b70cd18!important;color:#0a1831!important;min-width:0}
+#root .contact-section .contact-form-card{padding:clamp(20px,2.2vw,32px)!important}
+#root .contact-section .contact-panel-head{display:flex;align-items:center;gap:18px;margin-bottom:17px}
+#root .contact-section .contact-panel-icon{border:0!important;color:#fff!important;background:linear-gradient(140deg,#2184ff,#004ecb)!important;border-radius:16px!important;box-shadow:0 9px 19px #2373f42b!important;width:63px;height:63px;flex:0 0 63px;display:grid;place-items:center;font-size:27px}
+#root .contact-section .contact-panel-head h3{color:#071831!important;font-size:clamp(22px,2.5vw,35px);line-height:1.18;letter-spacing:-.035em}
+#root .contact-section .contact-panel-copy,#root .contact-section .contact-form-help{color:#4a6082!important}
+#root .contact-section .contact-form-help{padding:10px 14px;background:#eff6ff;border:1px solid #d7e7ff;border-radius:12px;margin:0 0 14px!important;font-size:12px;line-height:1.7}
+#root .contact-section .contact-form{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));column-gap:20px;row-gap:13px;align-items:end}
+#root .contact-section .contact-form-grid{display:contents!important}
+#root .contact-section .contact-form .contact-field{min-width:0}
+#root .contact-section .contact-form label{display:block;color:#071c37!important;font-size:13px;font-weight:700;margin-bottom:7px}
+#root .contact-section .contact-form input:not([type=checkbox]),#root .contact-section .contact-form select,#root .contact-section .contact-form textarea{width:100%;background:#fff!important;color:#0b2042!important;border:1px solid #bdcfe9!important;border-radius:9px!important;min-height:45px;padding:11px 13px;font-size:14px;box-shadow:none!important}
+#root .contact-section .contact-form input:focus-visible,#root .contact-section .contact-form select:focus-visible,#root .contact-section .contact-form textarea:focus-visible{outline:3px solid #2373f440;outline-offset:1px;border-color:#2373f4!important}
+#root .contact-section .contact-form textarea{min-height:75px;resize:vertical}
+#root .contact-section .contact-form .contact-field:has(textarea){grid-column:span 2}
+#root .contact-section .contact-form .contact-consent{color:#394f73!important;font-size:12px;align-self:center}
+#root .contact-section .contact-form .form-submit{color:#fff!important;background:linear-gradient(130deg,#0879ff,#004ac7)!important;border-radius:11px!important;min-height:54px;box-shadow:0 12px 22px #2373f429!important}
+#root .contact-section .contact-form .form-submit:hover,#root .contact-section .contact-form .form-submit:focus-visible{background:linear-gradient(120deg,#0057db,#0037a6)!important}
+#root .contact-section .contact-form .form-status{grid-column:1/-1}
+#root .contact-section .contact-location-card{padding:16px 20px!important;display:grid!important;grid-template-columns:minmax(0,.85fr) minmax(0,1.15fr);gap:22px!important;align-items:stretch;min-height:190px}
+#root .contact-section .contact-location-copy{padding:10px 12px!important;color:#12294d}
+#root .contact-section .contact-location-copy .contact-panel-head h3{font-size:24px!important;color:#0c56cc!important}
+#root .contact-section .contact-hours{color:#344f75!important;font-size:13px}
+#root .contact-section .map-card{min-height:180px;border-radius:16px;overflow:hidden}
+#root .contact-section .map-wrap{height:100%;min-height:180px}
+#root .contact-section .map-wrap iframe{width:100%;height:100%;min-height:180px}
+#root .contact-section .contact-map-link{color:#095acd!important;background:#edf6ff!important;border-color:#cde1ff!important;border-radius:10px}
+#root .contact-section .contact-map-link:hover{color:#fff!important;background:#2373f4!important}
+@media(max-width:1050px){#root .contact-section .kd-contact-perks{grid-template-columns:repeat(2,minmax(0,1fr))}#root .contact-section .kd-contact-perk:nth-child(2){border-right:0}#root .contact-section .contact-form{grid-template-columns:repeat(2,minmax(0,1fr))}#root .contact-section .contact-form .contact-field:has(textarea){grid-column:span 2}}
+@media(max-width:840px){#root .faq-section .kd-faq-layout{grid-template-columns:1fr;gap:25px}#root .faq-section .kd-faq-visual{max-width:620px;aspect-ratio:1.9}#root .contact-section::before{opacity:.3;width:70%;height:290px}#root .contact-section .contact-location-card{grid-template-columns:1fr}#root .contact-section .map-wrap,#root .contact-section .map-wrap iframe{min-height:240px}}
+@media(max-width:600px){#root .faq-section{padding:65px 0}#root .faq-section .faq-heading h2{font-size:clamp(29px,8vw,40px)}#root .faq-section .kd-faq-visual{border-radius:18px;aspect-ratio:1.35}#root .faq-section .faq-trigger{padding:15px 16px}#root .faq-section .faq-answer p{padding:0 16px 20px}#root .contact-section{padding:68px 0}#root .contact-section::before{width:90%;height:195px;opacity:.16}#root .contact-section .contact-heading h2{font-size:clamp(30px,8vw,43px)}#root .contact-section .kd-contact-perks{grid-template-columns:1fr 1fr;gap:8px;margin-bottom:18px}#root .contact-section .kd-contact-perk{padding:10px 5px;gap:8px;align-items:flex-start;border:0}#root .contact-section .kd-contact-perk-icon{flex-basis:38px;width:38px;height:38px;font-size:18px}#root .contact-section .kd-contact-perk strong{font-size:11px}#root .contact-section .kd-contact-perk span:not(.kd-contact-perk-icon){font-size:10px}#root .contact-section .contact-form-card{padding:17px!important}#root .contact-section .contact-form{display:flex;flex-direction:column;align-items:stretch;gap:12px}#root .contact-section .contact-form .contact-field:has(textarea){grid-column:auto}#root .contact-section .contact-panel-icon{width:53px;height:53px;flex-basis:53px}#root .contact-section .contact-panel-head h3{font-size:24px}#root .contact-section .contact-location-card{padding:12px!important}#root .contact-section .map-wrap,#root .contact-section .map-wrap iframe{min-height:205px}}
+
+/* Contact form full-width introduction, scoped fix. */
+#root .contact-section .contact-form .contact-form-help{grid-column:1/-1}
+#root .contact-section .contact-form .contact-consent-error{grid-column:1/-1}
+
+#root .contact-section .contact-heading h2 .kd-contact-head-highlight{color:#0865ee!important}
+
+#root .contact-section .kd-contact-security{margin-left:auto;display:inline-flex;align-items:center;gap:7px;white-space:nowrap;padding:10px 12px;border-radius:12px;border:1px solid #bddfd3;background:#f0faf7;color:#12613f;font-weight:700;font-size:11px}
+#root .contact-section .kd-contact-service-list{display:grid;gap:9px;margin-top:12px;color:#27446d}
+#root .contact-section .kd-contact-service-list p{font-size:13px;line-height:1.7;color:#27446d;margin:0}
+#root .contact-section .kd-contact-service-list i{color:#2373f4;margin-right:6px}
+@media(max-width:750px){#root .contact-section .kd-contact-security{font-size:10px;margin-left:0}#root .contact-section .contact-form-card>.contact-panel-head{flex-wrap:wrap}}
+
+/* Oct 21: interaction polish limited to pricing, the blog listing, FAQ and contact. */
+/* Public navigation: use the same 1180px compact breakpoint as the header CSS. */
+@media (max-width:1180px){
+ #root .site-header .nav-shell{min-width:0;align-items:center;gap:12px}
+ #root .site-header .nav-menu-desktop,#root .site-header .cta-pill,#root .site-header .app-install-button{display:none!important}
+ #root .site-header .brand{min-width:0;flex:0 1 auto}
+ #root .site-header .hamburger{display:inline-flex!important;flex:0 0 44px;flex-direction:column;align-items:center;justify-content:center;gap:5px;width:44px!important;height:44px!important;margin-left:auto!important;padding:0;position:relative;cursor:pointer}
+ #root .site-header .hamburger span{display:block;flex:0 0 2px;width:18px;height:2px;margin:0;background:currentColor;border-radius:999px;transform-origin:center;transition:transform .24s ease,opacity .24s ease}
+ #root .site-header .hamburger.active span:first-child{transform:translateY(7px) rotate(45deg)}
+ #root .site-header .hamburger.active span:nth-child(2){opacity:0;transform:scaleX(.2)}
+ #root .site-header .hamburger.active span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+ #root .nav-overlay-mobile{display:block!important;position:fixed;inset:0;z-index:1490!important;opacity:0;visibility:hidden;pointer-events:none;background:#03152561;backdrop-filter:blur(10px)}
+ #root .nav-overlay-mobile.active{opacity:1;visibility:visible;pointer-events:auto}
+ #root .nav-overlay-mobile.closing{opacity:0;visibility:visible;pointer-events:none}
+ #root .nav-menu-mobile{display:flex!important;position:fixed;inset:max(12px,env(safe-area-inset-top)) max(12px,env(safe-area-inset-right)) max(12px,env(safe-area-inset-bottom)) auto!important;z-index:1501!important;box-sizing:border-box;width:min(380px,calc(100vw - 24px))!important;max-width:calc(100vw - 24px)!important;max-height:calc(100dvh - 24px);padding:16px!important;flex-direction:column;align-items:stretch;justify-content:flex-start;gap:14px;border-radius:18px!important;overflow:hidden;opacity:0;visibility:hidden;pointer-events:none;transform:translateX(calc(100% + 12px));box-shadow:-20px 0 50px #061a3833}
+ #root .nav-menu-mobile.active{opacity:1;visibility:visible;pointer-events:auto;transform:translateX(0)}
+ #root .nav-menu-mobile.closing{opacity:0;visibility:visible;pointer-events:none;transform:translateX(calc(100% + 12px))}
+ #root .nav-menu-mobile .mobile-menu-header{display:flex;flex:0 0 auto;align-items:center;justify-content:space-between;gap:12px;min-width:0;margin:0!important;padding:0 0 12px!important;border-bottom:1px solid #dce7fa!important}
+ #root .nav-menu-mobile .mobile-menu-brand{display:flex;align-items:center;gap:10px;min-width:0}
+ #root .nav-menu-mobile .mobile-menu-brand img{width:34px;height:34px;object-fit:contain;flex-shrink:0}
+ #root .nav-menu-mobile .mobile-menu-brand-copy{display:grid;gap:4px;min-width:0}
+ #root .nav-menu-mobile .mobile-menu-brand-title{font-size:.98rem;line-height:1.3;overflow-wrap:anywhere}
+ #root .nav-menu-mobile .mobile-menu-brand-subtitle{font-size:.7rem;line-height:1.4}
+ #root .nav-menu-mobile .mobile-close{display:inline-flex;flex:0 0 40px;align-items:center;justify-content:center;width:40px!important;height:40px!important;min-width:40px;border-radius:12px}
+ #root .nav-menu-mobile .mobile-menu-list{display:grid;flex:1 1 auto;align-content:start;gap:6px!important;min-height:0;padding:0 3px 0 0;overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain;scrollbar-width:thin}
+ #root .nav-menu-mobile :is(.nav-link,.nav-button){box-sizing:border-box;width:100%;min-width:0;min-height:44px!important;padding:10px 12px!important;font-size:.9rem!important;line-height:1.4;flex-shrink:0}
+ #root .nav-menu-mobile :is(.nav-link-label,.nav-link-icon){color:inherit!important}
+ #root .nav-menu-mobile .mobile-sidebar-download{flex:0 0 auto;min-width:0;margin-top:0}
+}
+@media (prefers-reduced-motion:reduce){#root .site-header .hamburger span{transition:none}}
+#root #pricing-section .kd-pricing-controls{flex-direction:column;justify-content:center;gap:12px;margin:18px 0 26px;text-align:center}
+#root #pricing-section .kd-pricing-arrows{justify-content:center;gap:14px}
+#root #pricing-section .kd-price-arrow{width:54px;height:54px;border-radius:17px;color:#fff;background:linear-gradient(140deg,#328aff,#155bd3);border:1px solid #78adff;box-shadow:0 8px 22px #2373f433,inset 0 1px #ffffff4d;font-size:18px;transition:background .28s,color .28s,box-shadow .28s,transform .28s}
+#root #pricing-section .kd-price-arrow:is(:hover,:focus-visible){color:#fff!important;background:linear-gradient(140deg,#2373f4,#1149ad)!important;border-color:#2373f4!important;box-shadow:0 12px 28px #2373f455,inset 0 1px #ffffff4d!important;transform:translateY(-3px)}
+#root #pricing-section .kd-price-arrow:focus-visible{outline:3px solid #2373f477;outline-offset:4px}
+#root #pricing-section .kd-price-arrow:active{transform:scale(.95);translate:none!important}
+#root #pricing-section .kd-pricing-viewport{touch-action:pan-x pan-y pinch-zoom;cursor:grab}
+#root #pricing-section .kd-pricing-viewport.is-dragging{cursor:grabbing;scroll-behavior:auto;user-select:none}
+/* One page scroll surface: all features stay visible, with aligned card actions. */
+#root #pricing-section .pricing-package-grid{align-items:stretch!important}
+#root #pricing-section .pricing-card-reference{height:auto!important;min-height:860px!important;align-self:stretch}
+#root #pricing-section .pricing-card-content{overflow:visible;overscroll-behavior:auto;padding-right:0;container-type:inline-size}
+#root #pricing-section .pricing-card-content .price{white-space:nowrap!important;overflow-wrap:normal;word-break:normal;font-size:clamp(.8rem,5.7cqw,1.25rem)!important;line-height:1.5;letter-spacing:-.025em}
+
+/* Listing-only rules leave the homepage article carousel and article pages intact. */
+#root .route-blog-page .route-article-card{transition:transform .3s cubic-bezier(.22,1,.36,1),border-color .3s,box-shadow .3s!important}
+#root .route-blog-page .route-article-card:is(:hover,:focus-within)::before{background:linear-gradient(145deg,#2373f409,transparent 60%)!important;border-color:transparent!important;pointer-events:none}
+#root .route-blog-page .route-article-card img{transition:transform .5s cubic-bezier(.22,1,.36,1),filter .5s}
+#root .route-blog-page .route-card-link{color:#155bd3!important;background:#edf4ff!important;border:1px solid #bed5fc!important;border-radius:12px;transition:background-color .28s,color .28s,border-color .28s,box-shadow .28s,transform .28s}
+#root .route-blog-page .route-card-link:is(:hover,:focus-visible){color:#fff!important;background:#155bd3!important;border-color:#155bd3!important;box-shadow:0 10px 24px #2373f43d!important;text-decoration:none!important;transform:translateY(-2px)!important}
+#root .route-blog-page .route-card-link:focus-visible{outline:3px solid #2373f477;outline-offset:4px}
+#root .route-blog-page .route-card-link::after{color:inherit;background:transparent!important;border-color:transparent!important;transition:transform .28s}
+#root .route-blog-page .route-card-link:is(:hover,:focus-visible)::after{transform:translateX(4px)}
+#root .route-blog-page .route-article-card:is(:hover,:focus-within){background:linear-gradient(160deg,#fff,#f4f8ff)!important;border-color:#2373f4!important;box-shadow:0 14px 32px #2373f426!important}
+
+#root #faq .kd-faq-layout{align-items:start}
+#root #faq .faq-list{width:100%;max-width:none;margin:0;align-items:stretch!important;gap:12px!important}
+#root #faq .faq-trigger{display:grid;grid-template-columns:minmax(0,1fr) 34px;align-items:center;gap:18px;min-height:72px;padding:18px 22px;transition:background-color .28s}
+#root #faq .faq-question{min-width:0;text-align:left;line-height:1.65;color:#f7fbff!important}
+#root #faq .faq-item{background:linear-gradient(145deg,#163d66,#0d2c50)!important;border-color:#b8d7ff35!important;box-shadow:0 9px 22px #00102a30!important;transition:background .3s,border-color .3s,box-shadow .3s,transform .3s}
+#root #faq .faq-item:is(:hover,:focus-within,.open){background:linear-gradient(145deg,#1c4b7c,#12355d)!important;border-color:#72acff!important;box-shadow:0 14px 30px #00102a50,inset 0 1px #ffffff12!important}
+#root #faq .faq-trigger:is(:hover,:focus-visible){background:transparent!important;color:#fff!important;box-shadow:none!important;translate:none!important}
+#root #faq .faq-trigger:focus-visible{outline:2px solid #8cc1ff;outline-offset:-4px}
+#root #faq .faq-icon{width:34px;min-width:34px;height:34px;border-radius:11px;background:#2073f431!important;color:#a4cfff!important;border-color:#75b0ff77!important;transition:background-color .28s,color .28s,border-color .28s,box-shadow .28s}
+#root #faq .faq-icon i{color:inherit!important}
+#root #faq .faq-item:is(:hover,:focus-within,.open) .faq-icon{background:#2373f4!important;color:#fff!important;border-color:#8cc1ff!important;box-shadow:0 5px 16px #2373f445}
+#root #faq .faq-answer p{color:#d6e8fc!important}
+#root #faq .faq-item.open .faq-answer{border-top-color:#8cc1ff33}
+#root #faq .kd-faq-visual{transition:border-color .35s,box-shadow .35s,transform .35s}
+#root #faq .kd-faq-visual img{transition:transform .6s cubic-bezier(.22,1,.36,1),filter .6s}
+
+#root #kontak :is(.contact-card,.map-card,.contact-social-card,.kd-contact-perk,.kd-contact-security){transition:border-color .3s,background-color .3s,box-shadow .3s,transform .3s}
+#root #kontak :is(.contact-panel-icon,.kd-contact-perk-icon,.contact-social-card>i,.kd-contact-service-list i,.kd-contact-security i){transition:transform .3s,box-shadow .3s,filter .3s,color .3s}
+#root #kontak .contact-card:is(:hover,:focus-within){border-color:#2373f4!important;box-shadow:0 18px 40px #2373f426!important}
+#root #kontak .contact-card:is(:hover,:focus-within) .contact-panel-icon{box-shadow:0 10px 24px #2373f440!important}
+#root #kontak .contact-social-card:is(:hover,:focus-visible){background:#edf4ff!important;border-color:#2373f4!important;box-shadow:0 10px 24px #2373f426!important}
+#root #kontak .contact-location-card{grid-template-columns:minmax(0,.7fr) minmax(0,1.3fr);min-height:360px}
+#root #kontak .map-card{display:flex;flex-direction:column;min-height:330px;border:1px solid #bed5fc}
+#root #kontak .map-wrap{flex:1;height:auto;min-height:280px}
+#root #kontak .map-wrap iframe{display:block;height:100%;min-height:280px;border:0}
+#root #kontak .contact-map-identity{display:flex;flex-wrap:wrap;align-items:center;gap:8px 10px;padding:12px 16px;background:#0b3a5b;color:#fff;line-height:1.5}
+#root #kontak .contact-map-identity strong{font-size:17px;color:#fff}
+#root #kontak .contact-map-identity>i{color:#80c4ff;font-size:20px}
+#root #kontak .contact-map-identity>span{flex-basis:100%;font-size:12px;color:#e0edff;overflow-wrap:anywhere}
+#root #kontak .map-card:is(:hover,:focus-within){border-color:#2373f4;box-shadow:0 12px 28px #2373f426}
+#root #kontak .contact-map-link{transition:background-color .28s,color .28s,border-color .28s,box-shadow .28s}
+#root #kontak .contact-map-link:is(:hover,:focus-visible){color:#fff!important;background:#155bd3!important;border-color:#155bd3!important;box-shadow:0 6px 16px #2373f433!important;text-decoration:none!important}
+#root #kontak .contact-map-link:focus-visible{outline:3px solid #2373f477;outline-offset:-3px}
+
+@media(hover:hover) and (pointer:fine){
+ #root .route-blog-page .route-article-card:hover{border-color:#2373f4!important;box-shadow:0 16px 34px #2373f429!important}
+ #root .route-blog-page .route-article-card:hover img{transform:scale(1.03);filter:saturate(1.06)}
+ #root #faq .kd-faq-visual:hover{border-color:#72acff;box-shadow:0 28px 60px #02102580,0 0 24px #2373f426;transform:translateY(-4px)}
+ #root #faq .kd-faq-visual:hover img{transform:scale(1.035);filter:saturate(1.05)}
+ #root #kontak .kd-contact-perk:hover{background:#ffffffa6;border-radius:14px;box-shadow:0 10px 24px #2373f41f;transform:translateY(-3px)}
+ #root #kontak .kd-contact-perk:hover .kd-contact-perk-icon{transform:translateY(-2px) rotate(-5deg);box-shadow:0 8px 20px #2373f433}
+ #root #kontak .contact-panel-icon:hover{transform:scale(1.06) rotate(-4deg)}
+ #root #kontak :is(.kd-contact-service-list p,.kd-contact-security):hover i{color:#155bd3;transform:scale(1.12)}
+}
+@media(max-width:840px){#root #kontak .contact-location-card{grid-template-columns:1fr}}
+@media(max-width:600px){
+ #root #pricing-section .kd-price-arrow{width:50px;height:50px;border-radius:15px}
+ #root #faq .faq-trigger{padding:15px 16px;gap:12px;min-height:68px}
+ #root #faq .faq-answer p{padding:0 16px 20px}
+ #root #kontak .map-card{min-height:310px}
+ #root #kontak .map-wrap,#root #kontak .map-wrap iframe{min-height:260px}
+}
+@media(prefers-reduced-motion:reduce){
+ #root #pricing-section .kd-price-arrow,#root .route-blog-page :is(.route-article-card,.route-article-card img,.route-card-link,.route-card-link::after),#root #faq :is(.faq-item,.faq-trigger,.faq-icon,.faq-icon i,.kd-faq-visual,.kd-faq-visual img),#root #kontak :is(.contact-card,.map-card,.contact-social-card,.kd-contact-perk,.kd-contact-perk-icon,.contact-panel-icon,.contact-map-link,.kd-contact-service-list i,.kd-contact-security,.kd-contact-security i){transition:none!important}
+ #root .route-blog-page .route-article-card:hover img,#root #faq .kd-faq-visual:hover,#root #faq .kd-faq-visual:hover img,#root #kontak .kd-contact-perk:hover,#root #kontak .kd-contact-perk:hover .kd-contact-perk-icon,#root #kontak .contact-panel-icon:hover{transform:none!important}
+}
+
+/* PRE-BACKEND AUDIT / REQUIREMENT 1 AND 6: compact navigation at zoom 110%-150%.
+   Keep all original hover and scroll animations unchanged. */
+@media (max-width: 1180px) {
+ #root .site-header {max-width:100%;min-width:0}
+ #root .site-header .nav-shell {box-sizing:border-box;display:flex;flex-wrap:nowrap;min-width:0;width:100%;max-width:100%;gap:clamp(6px,1vw,13px);padding-inline:clamp(10px,2.5vw,22px)}
+ #root .site-header .brand {flex:0 1 auto;min-width:0;max-width:min(45vw,220px)}
+ #root .site-header .brand :is(.brand-text,.brand-accent) {min-width:0}
+ #root .site-header .hamburger {flex:0 0 44px;margin-inline-start:auto;z-index:1;touch-action:manipulation}
+ #root .nav-overlay-mobile {inset:0;max-height:100dvh}
+ #root .nav-menu-mobile {top:max(10px,env(safe-area-inset-top))!important;right:max(10px,env(safe-area-inset-right))!important;bottom:max(10px,env(safe-area-inset-bottom))!important;left:auto!important;height:auto!important;max-height:calc(100dvh - 20px - env(safe-area-inset-top) - env(safe-area-inset-bottom))!important;width:min(380px,calc(100vw - 20px))!important;max-width:calc(100vw - 20px)!important;min-width:0!important;box-sizing:border-box;display:flex!important;flex-direction:column;overscroll-behavior:contain;isolation:isolate}
+ #root .nav-menu-mobile .mobile-menu-list {flex:1 1 0;min-height:0;overflow-y:auto!important;overflow-x:hidden!important;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
+ #root .nav-menu-mobile .mobile-menu-header {flex-shrink:0;max-width:100%;min-width:0}
+ #root .nav-menu-mobile :is(.mobile-menu-brand,.mobile-menu-brand-copy,.nav-dropdown,.mobile-submenu-row,.nav-link-copy) {min-width:0;max-width:100%}
+ #root .nav-menu-mobile .mobile-submenu-row {display:flex;align-items:stretch}
+ #root .nav-menu-mobile :is(.nav-link,.nav-button,.dropdown-link) {white-space:normal!important;overflow-wrap:anywhere;min-height:44px;max-width:100%}
+ #root .nav-menu-mobile .mobile-sidebar-download {flex:0 0 auto;min-width:0;max-width:100%;white-space:normal}
+}
+@media (max-width: 680px) {
+ #root :is(.hero-section,.services-section,.about-section,.portfolio-section,.blog-section,.faq-section,.contact-section,.pricing-section) .container {box-sizing:border-box;min-width:0;max-width:100%;padding-inline:clamp(14px,4vw,22px)}
+ #root :is(.contact-form-card,.contact-location-card,.faq-item,.pricing-card-reference,.portfolio-card,.blog-card) {min-width:0;max-width:100%;overflow-wrap:anywhere}
+ #root :is(.contact-form,.contact-form-grid) :is(input,select,textarea) {box-sizing:border-box;max-width:100%;min-width:0;font-size:16px}
+ #root :is(.contact-form,.contact-form-grid) button {min-height:44px;max-width:100%}
+ #root :is(.hero-section,.services-section,.about-section,.portfolio-section,.blog-section,.faq-section,.contact-section,.pricing-section) :is(h1,h2,h3,p) {overflow-wrap:break-word}
+ #root :is(.contact-form-card,.contact-location-card,.faq-item) {border-radius:clamp(14px,4vw,22px)}
+}
+@media (max-height:600px) and (max-width:1180px) {
+ #root .nav-menu-mobile {gap:8px;padding:12px!important;border-radius:14px!important}
+ #root .nav-menu-mobile .mobile-menu-header {padding-bottom:8px!important}
+ #root .nav-menu-mobile .mobile-sidebar-download {padding-block:8px}
+}
+
+/* Public mobile polish: clear hierarchy, comfortable controls and safe gutters. */
+#root :is(a,button,input,select,textarea):focus-visible{outline:3px solid #2373f4;outline-offset:4px}
+#root .site-header .brand picture{flex:0 0 auto}
+#root .site-header .brand-text{display:flex;flex-wrap:nowrap;gap:.2em;white-space:nowrap!important;overflow-wrap:normal!important;word-break:normal;flex-shrink:0}
+#root .site-header .brand-text span{white-space:nowrap!important;overflow-wrap:normal!important;word-break:normal}
+@media(max-width:900px){
+ #root .hero-section .hero-grid{grid-template-areas:"welcome" "title" "description" "actions" "social" "visual" "note" "proof";grid-template-rows:auto!important;align-content:start!important;min-height:0!important;padding-block:30px 36px!important;row-gap:18px!important}
+ #root .hero-section .hero-welcome{width:100%;line-height:1.5!important;letter-spacing:.02em}
+ #root .hero-section .hero-welcome-text{font-size:clamp(.65rem,3.15vw,.88rem)!important;letter-spacing:.035em;min-height:1.5em}
+ #root .hero-section .hero-title{font-size:clamp(1.8rem,6.5vw,2.65rem)!important;line-height:1.2!important;letter-spacing:-.035em!important;text-wrap:balance!important;overflow-wrap:normal}
+ #root .hero-section .hero-copy{display:contents}
+ #root .hero-section .hero-copy>p:first-child{grid-area:description}
+ #root .hero-section .hero-note{grid-area:note}
+ #root .hero-section .hero-proof{grid-area:proof}
+ #root .hero-section .hero-copy>p{font-size:.9375rem!important;line-height:1.75!important;margin:0!important}
+ #root .hero-section .hero-actions{grid-area:actions;display:grid!important;grid-template-columns:1fr 1fr!important;gap:10px!important;margin:6px 0 0!important}
+ #root .hero-section .hero-actions .button{min-height:48px;padding:12px!important;font-size:.8125rem!important;line-height:1.5;border-radius:14px!important;white-space:normal;text-align:center}
+ #root .hero-section .hero-social{grid-area:social;justify-content:flex-start!important;margin:4px 0 0!important;gap:12px!important}
+ #root .hero-section .hero-social-link{width:44px!important;height:44px!important;min-width:44px}
+ #root .hero-section .hero-visual{width:min(100%,340px)!important;margin:0 auto!important}
+ #root .hero-section .hero-card-main{width:100%!important;min-height:0!important;height:auto!important;aspect-ratio:1;margin:0!important}
+ #root .hero-section .hero-carousel-image{max-height:100%!important}
+}
+@media(max-width:680px){
+ #root .site-header .nav-shell{width:calc(100% - 24px)!important;margin-inline:auto;padding:8px 12px!important;min-height:62px!important;border-radius:18px!important}
+ #root .site-header .brand{max-width:calc(100% - 56px)!important;gap:8px!important}
+ #root .site-header .brand-text{font-size:.69rem!important;letter-spacing:.08em!important}
+ #root .site-header .brand img{width:36px!important;height:36px!important}
+ #root main :is(.about-section,.services-section,.pricing-section,.portfolio-section,.blog-section,.testimonial-section,.faq-section,.contact-section){padding-block:54px!important}
+ #root main section>.container{width:100%!important;max-width:100%!important;padding-inline:20px!important}
+ #root main :is(.section-heading,.services-heading,.about-heading,.pricing-header,.contact-heading,.faq-heading,.blog-section-intro){gap:12px!important;margin-bottom:26px!important}
+ #root main :is(.section-heading,.services-heading,.about-heading,.pricing-header,.contact-heading,.faq-heading,.blog-section-intro) h2{font-size:clamp(1.55rem,6.3vw,2rem)!important;line-height:1.25!important;letter-spacing:-.025em!important;text-wrap:balance}
+ #root main :is(.section-heading,.services-heading,.about-heading,.pricing-header,.contact-heading,.faq-heading,.blog-section-intro)>p{font-size:.9375rem!important;line-height:1.75!important}
+ #root :is(.service-card,.portfolio-card,.blog-card,.testimonial-card,.about-team-card,.route-article-card){border-radius:20px!important}
+ #root :is(.service-card,.testimonial-card,.about-team-card){padding:22px!important}
+ #root :is(.service-card,.portfolio-card,.blog-card,.testimonial-card,.about-team-card,.route-article-card) p{font-size:.9375rem!important;line-height:1.7!important}
+ #root :is(.button,.route-card-link,.portfolio-card-link,.blog-read-more){min-height:44px}
+ #root .kd-pricing-controls{font-size:.8125rem!important;line-height:1.6}
+ #root #pricing-section .pricing-card-reference{min-height:0!important;padding:22px!important;flex-basis:min(330px,calc(100vw - 64px))!important;width:min(330px,calc(100vw - 64px))!important}
+ #root #pricing-section .pricing-card-content{overflow:visible!important;padding:0!important}
+ #root #pricing-section .pricing-card-content .price{font-size:clamp(1rem,5.7cqw,1.25rem)!important}
+ #root #faq .faq-trigger{min-height:68px;padding:16px;gap:12px}
+ #root #faq .faq-question{font-size:.9375rem!important;line-height:1.6}
+ #root #kontak :is(.contact-intro-card,.contact-form-card,.contact-location-card){padding:22px!important}
+ #root #kontak :is(.contact-field input,.contact-field select){min-height:50px;font-size:16px!important;border-radius:12px}
+ #root #kontak .contact-field textarea{min-height:140px;font-size:16px!important;line-height:1.6}
+ #root #kontak .contact-field label{font-size:.875rem!important;line-height:1.5}
+ #root #kontak :is(.contact-panel-copy,.contact-lead,.contact-form-help,.kd-contact-security){font-size:.875rem!important;line-height:1.65}
+ #root #kontak .contact-consent{align-items:start;gap:12px;font-size:.875rem;line-height:1.6}
+ #root #kontak .contact-consent input{width:20px;height:20px;flex:0 0 20px;margin-top:3px}
+ #root #kontak .contact-form-grid{grid-template-columns:minmax(0,1fr)!important;gap:18px!important}
+ #root #kontak .contact-field{grid-column:1/-1;min-width:0}
+ #root #kontak .contact-form button[type=submit]{min-height:50px}
+ #root .route-page-intro{padding-block:38px!important}
+ #root .route-page-intro h1{font-size:clamp(1.8rem,7vw,2.5rem)!important;line-height:1.2!important;text-wrap:balance}
+}
+@media(max-width:359px){
+ #root main section>.container{padding-inline:16px!important}
+ #root .site-header .brand-text{font-size:.63rem!important;letter-spacing:.04em!important}
+ #root .hero-section .hero-title{font-size:1.75rem!important}
+ #root #kontak :is(.contact-intro-card,.contact-form-card,.contact-location-card){padding:18px!important}
+}
+
+/* Public audit: stable card surfaces and a shared Visi–Misi hover. */
+:is(#root main,body.kd-article-page,.page-shell) :is(.about-info-card,.info-card,.service-card,.service-group-premium,.pricing-card-reference,.pricing-comparison-card,.pricing-download-card,.portfolio-card,.blog-card,.blog-card-frame,.testimonial-card,.faq-item,.contact-card,.contact-form-card,.contact-intro-card,.contact-location-card,.contact-cta-card,.contact-social-card,.route-card,.route-article-card,.side-card) {
+ transition:transform .18s ease-out,border-color .18s ease-out,box-shadow .18s ease-out!important;
+}
+:is(#root main,body.kd-article-page,.page-shell) :is(.about-info-card,.info-card,.service-card,.pricing-card-reference,.pricing-comparison-card,.pricing-download-card,.portfolio-card,.blog-card,.blog-card-frame,.testimonial-card,.faq-item,.contact-card,.contact-form-card,.contact-intro-card,.contact-location-card,.contact-cta-card,.contact-social-card,.route-card,.route-article-card,.side-card):is(:hover,:focus-within) {
+ background:var(--kd-public-card-surface,#fff)!important;
+ border-color:#2373f4!important;
+ box-shadow:0 12px 28px #2373f41f!important;
+ transform:translateY(-4px)!important;
+}
+#root main .service-card {color:#142e55!important;}
+#root main .blog-card-frame {--kd-public-card-surface:#fffffffb;}
+#root main .contact-section :is(.contact-form-card,.contact-location-card) {--kd-public-card-surface:#fffffff5;}
+#root main.route-blog-page .route-article-card:is(:hover,:focus-within) {
+ background:#fff!important;box-shadow:0 12px 28px #2373f41f!important;
+}
+#root #faq .faq-item:not(.open):is(:hover,:focus-within) {
+ background:linear-gradient(145deg,#163d66,#0d2c50)!important;
+ border-color:#2373f4!important;box-shadow:0 12px 28px #2373f41f!important;
+}
+#root main .service-card:is(:hover,:focus-within) :is(h3,h4) {color:#142e55!important;}
+#root main .service-card:is(:hover,:focus-within) :is(p,li) {color:#3c506c!important;}
+#root main :is(.about-info-card,.service-card,.route-card):is(:hover,:focus-within) :is(.about-card-icon,.service-card-icon,.route-service-card-icon) {
+ color:#2373f4!important;background:#edf4ff!important;border-color:#dce7fa!important;
+ animation:none!important;transform:none!important;box-shadow:none!important;
+}
+#root main .service-card:is(:hover,:focus-within) i {color:inherit!important;transform:none!important;}
+#root main .route-card:is(:hover,:focus-within)::before {background:transparent!important;opacity:0!important;}
+
+/* Individual light team cards, with the About section visible around them. */
+#root .about-section .about-team {
+ background:transparent!important;border:0!important;box-shadow:none!important;
+}
+#root .about-section .about-team::before,
+#root .about-section .about-team::after {content:none!important;}
+#root .about-section .about-team .about-team-grid {
+ align-items:stretch!important;gap:24px!important;padding-top:0!important;
+}
+#root .about-section .about-team .team-card {
+ display:grid!important;grid-template-rows:auto 1fr auto!important;align-content:start!important;
+ gap:18px!important;height:100%!important;padding:30px 22px 24px!important;
+ background:linear-gradient(160deg,#fff,#f4f8ff)!important;
+ border:1px solid #d1e0f5!important;border-radius:26px!important;
+ box-shadow:0 12px 32px #142e5512,inset 0 1px #fff!important;
+ color:#142e55!important;
+ transition:transform .2s ease-out,border-color .2s ease-out,box-shadow .2s ease-out!important;
+ overflow:hidden!important;transform:none!important;
+}
+#root .about-section .about-team .team-card:is(:hover,:focus-within) {
+ border-color:#2373f4!important;box-shadow:0 20px 40px #2373f426,inset 0 1px #fff!important;
+ transform:translateY(-5px)!important;
+}
+#root .about-section .about-team .team-avatar-wrap {
+ margin:0 auto 4px!important;animation:none!important;
+}
+#root .about-section .about-team .team-card-copy {
+ align-content:start!important;gap:12px!important;
+}
+#root .about-section .about-team .team-card-copy h3 {
+ font-size:clamp(1.375rem,2vw,1.75rem)!important;line-height:1.25!important;margin:0!important;
+}
+#root .about-section .about-team .team-socials {align-self:end!important;margin-top:4px!important;}
+#root .about-section .about-team .team-card::before,
+#root .about-section .about-team .team-card::after {content:none!important;}
+#root .about-section .about-team .about-team-heading-copy h2,
+#root .about-section .about-team .team-card-copy h3 {color:#142e55!important;}
+#root .about-section .about-team .about-team-heading-copy p,
+#root .about-section .about-team .team-description {
+ color:#27446d!important;font-size:.9375rem!important;line-height:1.7!important;opacity:1!important;
+}
+#root .about-section .about-team .team-role {
+ color:#1753a6!important;font-size:.8125rem!important;line-height:1.5!important;
+ letter-spacing:.035em!important;opacity:1!important;
+}
+#root .about-section .about-team .about-team-heading {margin-bottom:32px!important;}
+@media(max-width:680px) {
+ #root .about-section .about-team .team-card {padding:26px 20px 22px!important;border-radius:22px!important;}
+}
+
+@keyframes kd-public-sidebar-in {
+ from {opacity:0;transform:translate3d(calc(100% + 24px),0,0);}
+ to {opacity:1;transform:translate3d(0,0,0);}
+}
+@media(max-width:1180px) {
+ #root #mobile-navigation.active {animation:kd-public-sidebar-in .28s cubic-bezier(.22,1,.36,1)!important;}
+ #root #mobile-navigation.closing {animation:none!important;}
+ #root .nav-menu-mobile .mobile-submenu-toggle .mobile-submenu-arrow {
+  color:inherit!important;border-color:currentColor!important;transform:none!important;transition:none!important;
+ }
+ #root .nav-menu-mobile .mobile-submenu-toggle .mobile-submenu-arrow-glyph {
+  display:block!important;width:9px;height:9px;color:inherit!important;
+  border-right:2px solid currentColor;border-bottom:2px solid currentColor;
+  transform:translateY(-2px) rotate(45deg)!important;transition:transform .18s ease!important;
+ }
+ #root .nav-menu-mobile .mobile-submenu-toggle:is(:hover,:focus-visible,.open) .mobile-submenu-arrow-glyph {
+  transform:translateY(2px) rotate(225deg)!important;
+ }
+}
+@media(max-width:900px) {
+ #root #portfolio .portfolio-showcase {grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:12px!important;}
+ #root #portfolio .portfolio-showcase>.portfolio-card {grid-area:1/1/2/3!important;width:100%!important;margin-inline:auto!important;}
+ #root #portfolio .portfolio-showcase>.slider-control {
+  grid-row:2!important;width:44px!important;height:44px!important;align-self:start!important;
+  display:grid!important;place-items:center!important;padding:0!important;margin:0!important;
+  line-height:1!important;transform:none!important;
+ }
+ #root #portfolio .portfolio-showcase>.slider-control i {display:block;line-height:1!important;margin:0!important;}
+ #root #portfolio .portfolio-showcase>.slider-control:first-child {grid-column:1!important;justify-self:end!important;}
+ #root #portfolio .portfolio-showcase>.slider-control:last-child {grid-column:2!important;justify-self:start!important;}
+ #root #pricing-section .kd-pricing-controls {
+  flex-direction:column!important;align-items:center!important;justify-content:center!important;text-align:center!important;
+ }
+ #root #pricing-section .kd-pricing-arrows {
+  display:flex!important;justify-content:center!important;align-self:center!important;
+  margin-inline:0!important;gap:12px!important;
+ }
+ #root #blog .blog-carousel-footer {
+  display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;gap:10px!important;
+ }
+ #root #blog .blog-carousel-actions {
+  display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  gap:10px 12px!important;width:100%!important;max-width:260px!important;margin-inline:auto!important;
+ }
+ #root #blog .blog-slide-count {grid-area:1/1/2/3!important;text-align:center!important;}
+ #root #blog .blog-arrow-button:first-child {grid-area:2/1/3/2!important;justify-self:end!important;}
+ #root #blog .blog-arrow-button:last-child {grid-area:2/2/3/3!important;justify-self:start!important;}
+ #root #testimoni .testimonial-stage {
+  display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  grid-template-rows:auto 44px!important;gap:16px 12px!important;align-items:start!important;
+ }
+ #root #testimoni .testimonial-slide {grid-area:1/1/2/3!important;min-width:0!important;}
+ #root #testimoni .testimonial-stage>.slider-control:first-child {grid-area:2/1/3/2!important;justify-self:end!important;}
+ #root #testimoni .testimonial-stage>.slider-control:last-child {grid-area:2/2/3/3!important;justify-self:start!important;}
+ #root :is(#portfolio .slider-control,#pricing-section .kd-price-arrow,#blog .blog-arrow-button,#testimoni .slider-control) {
+  display:grid!important;place-items:center!important;width:44px!important;height:44px!important;
+  min-width:44px!important;padding:0!important;margin:0!important;line-height:1!important;transform:none!important;
+ }
+ #root :is(#portfolio .slider-control,#pricing-section .kd-price-arrow,#blog .blog-arrow-button,#testimoni .slider-control) :is(i,svg) {
+  display:block!important;margin:0!important;line-height:1!important;
+ }
+}
+@media(prefers-reduced-motion:reduce) {
+ #root .about-section .about-team .team-card {transition:none!important;}
+ #root .about-section .about-team .team-card:is(:hover,:focus-within) {transform:none!important;}
+ #root #mobile-navigation.active {animation:none!important;}
+ :is(#root main,body.kd-article-page,.page-shell) :is(.info-card,.service-card,.pricing-card-reference,.portfolio-card,.blog-card,.testimonial-card,.faq-item,.contact-card,.route-card,.team-card),
+ #root .nav-menu-mobile .mobile-submenu-toggle .mobile-submenu-arrow-glyph {transition:none!important;}
+}

@@ -1,4 +1,4 @@
-/* Shared demo content for public pages and Workspace on the same browser/origin. */
+/* Published content shared by the website and Workspace. */
 (() => {
   'use strict';
   if (window.KotekaWorkspace) return;
@@ -8,16 +8,18 @@
   const projectPublic = input => {
     if(Array.isArray(input))return input.filter(x=>!x||typeof x!=='object'||!('status' in x)||x.status==='Publik').map(projectPublic);
     if(input && typeof input==='object'){
-      const out={};for(const [k,v] of Object.entries(input)){
+      const out={},implicit=Array.isArray(input._koteka_implicit_collections)?input._koteka_implicit_collections:[];for(const [k,v] of Object.entries(input)){
+        if(k==='_koteka_implicit_collections'||implicit.includes(k)&&Array.isArray(v)&&v.length>0&&v.every(x=>x&&x.status==='Draft'))continue;
         if(v && typeof v==='object' && !Array.isArray(v) && 'status' in v && v.status!=='Publik')continue;
-        out[k]=projectPublic(v);
+        const cleanValue=projectPublic(v);
+        out[k]=cleanValue;
       }return out;
     }return input;
   };
-  let publishedRaw, publishedForEditor, publishedSnapshot;
+  let publishedRaw, publishedForEditor, publishedSnapshot, confirmedRaw=null;
   const published = () => {
     let raw;
-    try {raw=localStorage.getItem(keys.public);} catch {return {};}
+    try {raw=confirmedRaw??localStorage.getItem(keys.public);} catch {raw=confirmedRaw;}
     const forEditor=/^\/admin(?:\/|$)/.test(location.pathname);
     if(raw===publishedRaw && forEditor===publishedForEditor)return publishedSnapshot;
     let value;
@@ -37,7 +39,10 @@
   const list = value => Array.isArray(value) ? value.filter(x=>x && (!x.status || x.status==='Publik')) : [];
   const words = value => Array.isArray(value) ? value : String(value || '').split(/[,\n]/).map(x=>x.trim()).filter(Boolean);
   const url = (value, image=false) => {
-    const text=String(value || '').trim();
+    const raw=String(value || '');
+    if(/[\x00-\x1f\x7f\\]/.test(raw))return '';
+    const text=raw.trim();
+    if(text.startsWith('//'))return '';
     if (/^(?:\/[^/]|\/$|#|\.\.?\/)/.test(text)) return text;
     if (/^https?:\/\//i.test(text)) return text;
     if (!image && /^(?:mailto:|tel:)/i.test(text)) return text;
@@ -115,8 +120,7 @@
     return Object.keys(changes).length ? {...get(key,{}),...changes} : null;
   }
   const detailField = name => ({'jumlah halaman':'pages','desain':'design','desain ui':'design','revisi':'revisions','estimasi pengerjaan':'duration','maintenance':'maintenance'})[String(name || '').trim().toLowerCase()];
-  function commit(content, key) {
-    const beforeContent=localStorage.getItem(keys.content),beforePublic=localStorage.getItem(keys.public);
+  async function commit(content, key) {
     const next={...published()},cached={...read(keys.content)};
     next[key]=content[key];
     cached[key]=Array.isArray(content[key]) ? content[key] : {...cached[key],...content[key]};
@@ -175,8 +179,10 @@
     }
     if (key==='serviceItems' || key==='serviceCategories') {next.serviceItems=content.serviceItems;next.serviceCategories=content.serviceCategories;}
     if (key==='serviceItems' || key==='serviceCategories') {cached.serviceItems=content.serviceItems;cached.serviceCategories=content.serviceCategories;}
-    try {localStorage.setItem(keys.content,JSON.stringify(cached));localStorage.setItem(keys.public,JSON.stringify(next));}
-    catch(error) {for(const [name,value] of [[keys.content,beforeContent],[keys.public,beforePublic]]) {try {value===null ? localStorage.removeItem(name) : localStorage.setItem(name,value);} catch {}}throw error;}
+    if(!window.KotekaLaravel?.saveContent)throw Error('Layanan penyimpanan tidak tersedia.');
+    const saved=await window.KotekaLaravel.saveContent(next);
+    confirmedRaw=JSON.stringify(saved||next);
+    try {localStorage.setItem(keys.content,JSON.stringify(cached));localStorage.setItem(keys.public,confirmedRaw);} catch {}
     notify();
   }
   function readPublic(base) {
@@ -196,103 +202,7 @@
     return out;
   }
   const subscribe = fn => {listeners.add(fn);return ()=>listeners.delete(fn);};
-  window.addEventListener('storage',event=>{if (event.key===keys.public || event.key===null) notify();});
-  function append(key,item,limit) {const current=read(key,[]);try {localStorage.setItem(key,JSON.stringify([item,...(Array.isArray(current)?current:[])].slice(0,limit)));} catch {}}
-  function startTracking() {
-    // Local-only preview analytics are not real visitor counts and must never
-    // be written on the public production origin. Server analytics comes later.
-    if (window.KotekaServerAnalytics || startTracking.started || !['localhost','127.0.0.1','[::1]','::1'].includes(location.hostname) || /^\/admin(?:\/|$)/.test(location.pathname)) return;
-    startTracking.started=true;
-    const id=()=>typeof crypto!=='undefined' && typeof crypto.randomUUID==='function' ? crypto.randomUUID() : 'local-'+Date.now().toString(36)+'-'+Math.random().toString(36).slice(2);
-    let session;
-    try {session=sessionStorage.getItem('koteka.demo.visitor');if(!session){session=id();sessionStorage.setItem('koteka.demo.visitor',session);}} catch {session=id();}
-    const device=/ipad|tablet/i.test(navigator.userAgent)?'Tablet':/mobile|android/i.test(navigator.userAgent)?'Mobile':'Desktop';
-    let channel='Direct';
-    try {const ref=new URL(document.referrer);if(ref.host!==location.host)channel=/google|bing|yahoo/i.test(ref.host)?'Organic Search':/facebook|instagram|tiktok|twitter/i.test(ref.host)?'Social Media':'Referral';} catch {}
-    const log=description=>append(keys.logs,{id:id(),date:new Date().toISOString(),kind:'visitor',module:'Kunjungan Website',actor:'Pengunjung lokal (demo)',description},1500);
-    let last='';
-    const visit=()=>{const page=location.pathname+location.hash;if(page===last)return;last=page;append(keys.traffic,{id:id(),date:new Date().toISOString(),page,channel,device,session,views:1,demo:true},15000);log('Mengunjungi '+page);};
-    visit();window.addEventListener('popstate',visit);window.addEventListener('hashchange',visit);window.addEventListener('kotekadigital:navigation-change',visit);
-    document.addEventListener('click',event=>{const link=event.target.closest?.('a[href]');if(link){const target=url(link.getAttribute('href'));if(target)log('Membuka tautan '+target.split('?')[0].slice(0,180));}});
-    document.addEventListener('submit',()=>log('Mengirim formulir konsultasi (demo lokal)'));
-  }
-  window.KotekaWorkspace={keys,get,list,url,contactMap,heroSlides,defaultHeroSlides,readPublic,editorData,settingsPatch,commit,subscribe,startTracking};
-  if(typeof document!=='undefined' && typeof location!=='undefined' && !/^\/admin(?:\/|$)/.test(location.pathname)) {
-    if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',startTracking,{once:true});
-    else startTracking();
-  }
-})();
-
-/* Loopback-only consultation simulation for static previews without an API.
-   Real server responses remain authoritative; an ambiguous failure is never retried locally. */
-(() => {
-  'use strict';
-  if (!window.location || window.KotekaConsultation) return;
-  // Never synthesize a successful lead/inbox operation on a Laravel-origin preview.
-  const localPreview = ['localhost', '127.0.0.1', '[::1]'].includes(window.location.hostname) && !document.querySelector('meta[name="csrf-token"]');
-  const key = 'koteka.consultation.demo.v1';
-  const unavailable = new Set();
-  const reply = (status, value) => new Response(JSON.stringify(value), {
-    status, headers: {'Content-Type': 'application/json', 'Cache-Control': 'no-store'}
-  });
-  const read = () => {
-    const value = JSON.parse(localStorage.getItem(key) || '[]');
-    if (!Array.isArray(value)) throw Error('Invalid simulation data');
-    return value;
-  };
-  const clean = (value, max) => String(value ?? '').trim().slice(0, max);
-  function simulate(path, options) {
-    try {
-      const items = read(), method = (options.method || 'GET').toUpperCase();
-      if (path === '/api/inbox' && method === 'GET') return reply(200, {
-        items, unread: items.filter(item => !item.read).length, simulation: true,
-        integrations: {email: false, whatsapp: false}
-      });
-      const input = JSON.parse(options.body || '{}');
-      if (path === '/api/inbox' && method === 'PATCH') {
-        const item = items.find(item => item.id === input.id);
-        if (!item) return reply(404, {error: 'Pesan simulasi tidak ditemukan.'});
-        item.read = true;
-        localStorage.setItem(key, JSON.stringify(items));
-        return reply(200, {ok: true, id: item.id, simulation: true});
-      }
-      if (path !== '/api/leads' || method !== 'POST') return reply(405, {error: 'Metode tidak didukung.'});
-      const lead = {id: crypto.randomUUID(), date: new Date().toISOString(),
-        nama: clean(input.nama, 90), namaBisnis: clean(input.namaBisnis, 120),
-        wa: clean(input.whatsapp || input.wa, 32).replace(/\D/g, '').replace(/^0/, '62'),
-        email: clean(input.email, 120), jenisWebsite: clean(input.jenisWebsite, 90),
-        anggaran: clean(input.anggaran, 90), targetSelesai: clean(input.targetSelesai, 90),
-        pesan: clean(input.pesan || input.message, 2500), kirimVia: clean(input.kirimVia, 30),
-        read: false, simulation: true};
-      if (input.persetujuan !== true || !['email', 'whatsapp'].includes(lead.kirimVia) ||
-          lead.nama.length < 3 || !lead.namaBisnis || !/^62\d{9,13}$/.test(lead.wa) ||
-          lead.pesan.length < 10 || !lead.jenisWebsite || !lead.anggaran || !lead.targetSelesai ||
-          (lead.kirimVia === 'email' && !lead.email) ||
-          (lead.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(lead.email))) {
-        return reply(422, {error: 'Data konsultasi tidak lengkap atau tidak valid.'});
-      }
-      lead.delivery = {email: 'not_requested', whatsapp: 'not_requested', [lead.kirimVia]: 'simulated'};
-      items.unshift(lead);
-      // A single durable write is the acknowledgement for both inbox and simulated delivery.
-      localStorage.setItem(key, JSON.stringify(items));
-      return reply(201, {ok: true, stored: true, id: lead.id, simulation: true, delivery: lead.delivery});
-    } catch {
-      return reply(507, {error: 'Simulasi belum tersimpan. Penyimpanan browser penuh, diblokir, atau tidak dapat dibaca. Data form tetap ada.'});
-    }
-  }
-  async function request(path, options = {}) {
-    if (!localPreview || !['/api/leads', '/api/inbox'].includes(path)) return fetch(path, options);
-    if (!unavailable.has(path)) {
-      const response = await fetch(path, options);
-      const json = (response.headers.get('content-type') || '').includes('application/json');
-      if (![404, 405, 501, 503].includes(response.status) && !(response.ok && !json)) return response;
-      unavailable.add(path);
-    }
-    // Serialize local writes across tabs when the browser supports Web Locks.
-    if (typeof navigator !== 'undefined' && navigator.locks?.request) {
-      return navigator.locks.request(key, () => simulate(path, options));
-    }
-    return simulate(path, options);
-  }
-  window.KotekaConsultation = {request, localPreview};
+  window.addEventListener('storage',event=>{if (event.key===keys.public || event.key===null) {confirmedRaw=event.newValue??null;notify();}});
+  window.addEventListener('koteka:session-expired',()=>{confirmedRaw=null;publishedRaw=undefined;notify();});
+  window.KotekaWorkspace={keys,get,list,url,contactMap,heroSlides,defaultHeroSlides,readPublic,editorData,settingsPatch,commit,subscribe};
 })();

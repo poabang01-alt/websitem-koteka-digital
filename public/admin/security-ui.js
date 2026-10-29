@@ -11,7 +11,6 @@
   const value=await res.json().catch(()=>({}));if(!res.ok)throw Error(value.error||'Permintaan belum berhasil.');return value;
  };
  const header=(title,description)=>`<div class="page-heading"><div><span class="page-kicker">KOTEKA DIGITAL / SUPER ADMIN</span><h1>${title}</h1><p>${description}</p></div><button type="button" class="btn btn-light" data-security-action="refresh"><i class="fa-solid fa-rotate" aria-hidden="true"></i> Refresh</button></div>`;
- const demoNotice=()=>access().simulation?'<div class="data-status-line">Pratinjau lokal · akun dan aktivitas tersimpan pada browser ini. Akses server menggunakan autentikasi backend.</div>':'';
  function authorized(){return access()?.isSuperAdmin()===true;}
  function accountForm(row){
   const editing=!!row;
@@ -28,7 +27,7 @@
   const version=++renderVersion;
   if(!authorized()){bridge.go('dashboard');return;}
   const accountPage=which==='accounts';
-  container.innerHTML=header(accountPage?'Account Control':'Admin Activity Logs',accountPage?'Kelola akun, peran, dan status akses Admin / Operator.':'Jejak aktivitas Super Admin, Admin, dan Operator · waktu Papua (WIT).')+demoNotice()+`<section class="panel panel-pad kd-security-panel" aria-busy="true"><p role="status">Memuat ${accountPage?'akun':'aktivitas'}...</p></section>`;
+  container.innerHTML=header(accountPage?'Account Control':'Admin Activity Logs',accountPage?'Kelola akun, peran, dan status akses Admin / Operator.':'Jejak aktivitas Super Admin, Admin, dan Operator · waktu Papua (WIT).')+`<section class="panel panel-pad kd-security-panel" aria-busy="true"><p role="status">Memuat ${accountPage?'akun':'aktivitas'}...</p></section>`;
   try{
    const data=await api(accountPage?'/api/admin-accounts':'/api/admin-activity');
    if(version!==renderVersion||!authorized()||container.dataset.module!==which)return;
@@ -53,7 +52,7 @@
   const action=(label,target,disabled=false,current=false)=>`<button type="button" class="btn btn-light btn-xs ${current?'is-current':''}" data-security-action="activity-page" data-page="${target}" ${disabled?'disabled':''} ${current?'aria-current="page"':''}>${label}</button>`;
   const low=Math.max(0,Math.min(activityPage-2,pages-5)),high=Math.min(pages,low+5);
   const controls=`<nav class="pagination-row" aria-label="Navigasi Log Aktivitas Admin"><span>Menampilkan ${activityRows.length?begin+1:0}–${Math.min(begin+activityPageSize,activityRows.length)} dari ${activityRows.length} data</span><div class="pagination-controls"><label class="pagination-size-label">Baris per halaman <select id="adminActivityPageSize" aria-label="Baris Log Aktivitas Admin per halaman">${[10,25,50].map(v=>`<option value="${v}" ${activityPageSize===v?'selected':''}>${v}</option>`).join('')}</select></label>${action('« Awal',0,activityPage===0)}${action('← Sebelumnya',activityPage-1,activityPage===0)}${Array.from({length:high-low},(_,i)=>action(String(low+i+1),low+i,false,low+i===activityPage)).join('')}${action('Berikutnya →',activityPage+1,activityPage>=pages-1)}${action('Akhir »',pages-1,activityPage>=pages-1)}</div></nav>`;
-  panel.innerHTML=`<div class="panel-head"><div><h2>Riwayat Aktivitas Admin</h2><p>${activityRows.length} aktivitas terbaru · identitas tercatat dari sesi akun</p></div><button type="button" class="btn btn-primary" data-security-action="export-activity"><i class="fa-solid fa-file-pdf" aria-hidden="true"></i> Unduh PDF</button></div><div class="kd-security-table-wrap"><table class="kd-security-table"><thead><tr><th>Pengguna</th><th>Peran</th><th>Aktivitas</th><th>Tanggal & Waktu</th></tr></thead><tbody>${rows.map(x=>`<tr><td><strong>${esc(x.user?.name||x.actor||'Administrator')}</strong><small>${esc(x.user?.email||'')}</small></td><td><span class="tag">${esc(roleLabel(x.user?.role||x.role||''))}</span></td><td><strong>${esc(x.module)}</strong><span>${esc(x.description)}</span></td><td class="kd-audit-date">${esc(date(x.date))}</td></tr>`).join('')||'<tr><td colspan="4">Belum ada aktivitas admin.</td></tr>'}</tbody></table></div>${controls}`;
+  panel.innerHTML=`<div class="panel-head"><div><h2>Riwayat Aktivitas Admin</h2><p>${activityRows.length} aktivitas terbaru · identitas tercatat dari sesi akun</p></div><div class="kd-security-row-actions"><button type="button" class="btn btn-danger" data-security-action="delete-all-activity">Hapus Semua</button><button type="button" class="btn btn-primary" data-security-action="export-activity"><i class="fa-solid fa-file-pdf" aria-hidden="true"></i> Unduh PDF</button></div></div><div class="kd-security-table-wrap"><table class="kd-security-table"><thead><tr><th>Pengguna</th><th>Peran</th><th>Aktivitas</th><th>Tanggal & Waktu</th><th>Tindakan</th></tr></thead><tbody>${rows.map(x=>`<tr><td><strong>${esc(x.user?.name||x.actor||'Administrator')}</strong><small>${esc(x.user?.email||'')}</small></td><td><span class="tag">${esc(roleLabel(x.user?.role||x.role||''))}</span></td><td><strong>${esc(x.module)}</strong><span>${esc(x.description)}</span></td><td class="kd-audit-date">${esc(date(x.date))}</td><td><button type="button" class="btn btn-danger btn-xs" data-security-action="delete-activity" data-id="${esc(x.id)}">Hapus</button></td></tr>`).join('')||'<tr><td colspan="5">Belum ada aktivitas admin.</td></tr>'}</tbody></table></div>${controls}`;
  }
  function editAccount(row){
   if(!authorized()||row?.locked)return;
@@ -63,7 +62,7 @@
  function accountConfirmation(row,remove){
   if(!authorized()||!row||row.locked)return;
   const panel=$('.kd-security-panel');panel.querySelector('.kd-account-confirm')?.remove();
-  panel.insertAdjacentHTML('beforeend',`<div class="kd-account-confirm" role="alert"><p>${remove?'Hapus akun':'Nonaktifkan akun'} <strong>${esc(row.email)}</strong>? Sesi akun ini akan berakhir.${remove?' Akun harus dibuat kembali jika ingin digunakan lagi.':''}</p><div class="kd-security-actions"><button type="button" class="btn btn-danger" data-security-action="confirm-${remove?'delete':'disable'}" data-id="${esc(row.id)}">${remove?'Hapus Akun':'Nonaktifkan Akun'}</button><button type="button" class="btn btn-light" data-security-action="cancel-confirm">Batal</button></div></div>`);
+  panel.insertAdjacentHTML('beforeend',`<div class="kd-account-confirm" role="alert"><p>${remove?'Hapus akun':'Nonaktifkan akun'} <strong>${esc(row.email)}</strong>? Sesi akun ini akan berakhir.${remove?' Akun diarsipkan dan tidak dapat digunakan untuk masuk.':''}</p><div class="kd-security-actions"><button type="button" class="btn btn-danger" data-security-action="confirm-${remove?'delete':'disable'}" data-id="${esc(row.id)}">${remove?'Hapus Akun':'Nonaktifkan Akun'}</button><button type="button" class="btn btn-light" data-security-action="cancel-confirm">Batal</button></div></div>`);
   panel.querySelector('.kd-account-confirm button').focus();
  }
  async function accountAction(button){
@@ -71,6 +70,15 @@
   const action=button.dataset.securityAction,row=accounts.find(u=>u.id===button.dataset.id);
   if(action==='activity-page'){if(button.disabled)return;activityPage=Number(button.dataset.page)||0;return paintActivityPage();}
   if(action==='export-activity'){const output=window.KotekaPDF?.exportAdminActivity(activityRows);if(output)bridge.toast(`PDF Log Admin berhasil diunduh (${output.records} data).`);return;}
+  if(action==='delete-activity'||action==='delete-all-activity'){
+   const id=button.dataset.id;
+   return bridge.confirmDeletion(id?'Hapus log admin ini?':'Hapus semua log admin?',id?'Log ini akan dihapus permanen.':'Seluruh log admin akan dihapus permanen, termasuk yang tidak sedang ditampilkan.',async()=>{
+    await api('/api/activity-logs',id?{scope:'admin',ids:[id],confirmed:true}:{scope:'admin',all:true,confirmed:true},'DELETE');
+    await window.KotekaServerAnalytics?.refresh();
+    if($('#mainContent').dataset.module==='admin-activity')await render('admin-activity',$('#mainContent'));
+    bridge.toast('Log admin berhasil dihapus.');
+   });
+  }
   if(action==='add-account')return editAccount();
   if(action==='edit-account')return editAccount(row);
   if(action==='cancel-edit')return $('.kd-account-editor')?.remove();
@@ -99,7 +107,7 @@
   if(!/^62\d{9,13}$/.test(number))return bridge.toast('Nomor WhatsApp pelanggan tidak valid.','error');
   replyMessage=message;replyRequestId=crypto.randomUUID();
   const dialog=$('#kdReplyDialog');
-  dialog.innerHTML=`<div class="dialog-head"><div><span class="overline">PESAN MASUK / WHATSAPP</span><h2 id="kdReplyTitle">Balas ${esc(message.nama||'Pelanggan')}</h2></div><button type="button" class="icon-button" data-reply-close aria-label="Tutup balasan">×</button></div><form id="kdReplyForm" class="kd-reply-form">${access().simulation?'<p class="data-status-line">Pratinjau lokal &middot; konfirmasi status disimulasikan. Tidak ada pesan WhatsApp yang dikirim oleh Workspace.</p>':''}<p>${esc(message.pesan)}</p><label>Isi balasan<textarea name="text" required minlength="3" maxlength="5000" rows="5" placeholder="Tulis balasan untuk pelanggan..."></textarea></label><a id="kdOpenWhatsapp" class="btn btn-light" href="https://wa.me/${number}" target="_blank" rel="noopener noreferrer"><i class="fa-brands fa-whatsapp" aria-hidden="true"></i> Buka WhatsApp</a><p class="kd-security-muted">Kirim pesan di WhatsApp, lalu kembali dan konfirmasi. Membuka WhatsApp tidak mengubah status balasan.</p><label class="kd-security-check"><input name="confirmed" type="checkbox" required> Saya sudah mengirim balasan ini di WhatsApp.</label><p class="kd-security-error" role="alert" hidden></p><div class="kd-security-actions"><button type="submit" class="btn btn-primary">Konfirmasi Terkirim</button><button type="button" class="btn btn-light" data-reply-close>Batal</button></div>${message.repliedAt?`<small class="kd-security-muted">Balasan terakhir: ${esc(date(message.repliedAt))} · ${esc(message.repliedBy?.name||'Admin')}</small>`:''}</form>`;
+  dialog.innerHTML=`<div class="dialog-head"><div><span class="overline">PESAN MASUK / WHATSAPP</span><h2 id="kdReplyTitle">Balas ${esc(message.nama||'Pelanggan')}</h2></div><button type="button" class="icon-button" data-reply-close aria-label="Tutup balasan">×</button></div><form id="kdReplyForm" class="kd-reply-form"><p>${esc(message.pesan)}</p><label>Isi balasan<textarea name="text" required minlength="3" maxlength="5000" rows="5" placeholder="Tulis balasan untuk pelanggan..."></textarea></label><a id="kdOpenWhatsapp" class="btn btn-light" href="https://wa.me/${number}" target="_blank" rel="noopener noreferrer"><i class="fa-brands fa-whatsapp" aria-hidden="true"></i> Buka WhatsApp</a><p class="kd-security-muted">Kirim pesan di WhatsApp, lalu kembali dan konfirmasi. Membuka WhatsApp tidak mengubah status balasan.</p><label class="kd-security-check"><input name="confirmed" type="checkbox" required> Saya sudah mengirim balasan ini di WhatsApp.</label><p class="kd-security-error" role="alert" hidden></p><div class="kd-security-actions"><button type="submit" class="btn btn-primary">Konfirmasi Terkirim</button><button type="button" class="btn btn-light" data-reply-close>Batal</button></div>${message.repliedAt?`<small class="kd-security-muted">Balasan terakhir: ${esc(date(message.repliedAt))} · ${esc(message.repliedBy?.name||'Admin')}</small>`:''}</form>`;
   dialog.querySelector('textarea').addEventListener('input',event=>{dialog.querySelector('#kdOpenWhatsapp').href=`https://wa.me/${number}?text=${encodeURIComponent(event.target.value)}`;});
   dialog.querySelector('#kdOpenWhatsapp').addEventListener('click',()=>bridge.writeLog('editor','Pesan Masuk',`Membuka WhatsApp untuk ${message.nama||'pelanggan'}`));
   dialog.showModal();

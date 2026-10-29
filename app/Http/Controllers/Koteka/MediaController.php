@@ -6,6 +6,7 @@ use App\Services\Koteka\PublicContentService;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
@@ -28,6 +29,11 @@ class MediaController extends Controller
         if (! $actor) {
             return AccessController::jsonError(401, 'Login Admin diperlukan.');
         }
+        $limitKey = 'koteka:upload:'.$actor->id;
+        if (RateLimiter::tooManyAttempts($limitKey, 20)) {
+            return AccessController::jsonError(429, 'Terlalu banyak unggahan. Coba kembali sebentar lagi.');
+        }
+        RateLimiter::hit($limitKey, 60);
         $request->validate(['image' => [
             'required', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048',
             'dimensions:max_width=3000,max_height=3000',

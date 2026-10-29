@@ -1,0 +1,88 @@
+/* Shared motion timing; native scrolling and existing layouts stay in control. */
+:root {
+  --kd-interaction-ease: cubic-bezier(.22, 1, .36, 1);
+  --kd-interaction-duration: 220ms;
+}
+html.kd-premium { scroll-behavior: smooth !important; }
+html.kd-premium :is(section[id], [id^="section-"], h2[id]) { scroll-margin-top: 100px; }
+#kd-scroll-progress {
+  position: fixed; inset: 0 0 auto; height: 2px; z-index: 2000;
+  pointer-events: none; background: #2373f4; transform-origin: left;
+  transform: scaleX(0);
+}
+
+:is(#root, body.kd-article-page, .page-shell, #appShell, #loginScreen, #dialogBackdrop, #confirmBackdrop, #profileBackdrop)
+  :is(button, .button, .btn, .cta-pill, .nav-link, .nav-button, .dropdown-link, .pricing-cta, .portfolio-cta, .blog-cta, .service-cta, .contact-cta-button, .form-submit, .article-nav-cta, .hero-social-link, .team-social-link, .footer-socials a, .about-logo-social-links a, .quick-link, .nav-item) {
+  transition: transform var(--kd-interaction-duration) var(--kd-interaction-ease),
+    translate var(--kd-interaction-duration) var(--kd-interaction-ease),
+    background-color var(--kd-interaction-duration) ease,
+    color var(--kd-interaction-duration) ease,
+    border-color var(--kd-interaction-duration) ease,
+    box-shadow var(--kd-interaction-duration) ease,
+    opacity var(--kd-interaction-duration) ease !important;
+}
+:is(#root, body.kd-article-page, .page-shell, #mainContent)
+  :is(.about-info-card, .info-card, .team-card, .service-card, .pricing-card-reference, .portfolio-card, .thumb-card, .blog-card, .testimonial-card, .faq-item, .contact-card, .contact-form-card, .contact-social-card, .route-card, .route-article-card, .panel, .stat-card),
+#root #pricing-section .pricing-card-reference {
+  transition: translate var(--kd-interaction-duration) var(--kd-interaction-ease),
+    border-color var(--kd-interaction-duration) ease,
+    box-shadow var(--kd-interaction-duration) ease !important;
+}
+:is(#root, body.kd-article-page, .page-shell, #appShell, #loginScreen, #dialogBackdrop, #confirmBackdrop, #profileBackdrop)
+  :is(a, button, input, select, textarea, [tabindex]):focus-visible {
+  outline: 3px solid #76abff !important; outline-offset: 3px;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  :is(#root, body.kd-article-page, .page-shell, #appShell, #loginScreen, #dialogBackdrop, #confirmBackdrop, #profileBackdrop)
+    :is(.button, .btn, .cta-pill, .pricing-cta, .portfolio-cta, .blog-cta, .service-cta, .contact-cta-button, .form-submit, .article-nav-cta, .app-install-button, .pricing-download-trigger, .quick-link):not(:disabled):not([aria-disabled="true"]):hover {
+    translate: 0 -2px !important; transform: none !important; filter: none !important;
+  }
+  :is(#root, body.kd-article-page, .page-shell)
+    :is(.about-info-card, .info-card, .team-card, .service-card, .pricing-card-reference, .portfolio-card, .thumb-card, .blog-card, .faq-item, .contact-card, .contact-social-card, .route-card, .route-article-card):hover {
+    translate: 0 -3px !important; transform: none !important;
+  }
+  :is(#root, body.kd-article-page, .page-shell, #mainContent)
+    :is(.about-info-card, .info-card, .team-card, .service-card, .pricing-card-reference, .portfolio-card, .thumb-card, .blog-card, .testimonial-card, .faq-item, .contact-card, .contact-form-card, .contact-social-card, .route-card, .route-article-card, .panel, .stat-card):hover,
+  #root #pricing-section .pricing-card-reference:hover {
+    border-color: #2373f4 !important;
+    box-shadow: 0 12px 28px #2373f426 !important;
+  }
+  :is(#root, body.kd-article-page, .page-shell, #appShell)
+    :is(.nav-link, .nav-button, .dropdown-link, .hero-social-link, .team-social-link, .footer-socials a, .about-logo-social-links a, .icon-button, .action-icon, .nav-item):hover {
+    translate: none !important;
+  }
+}
+@media (pointer: coarse) {
+  :is(#root, body.kd-article-page, .page-shell, #appShell, #loginScreen)
+    :is(.button, .btn, .service-card, .pricing-card-reference, .portfolio-card, .blog-card, .team-card):hover {
+    translate: none !important; transform: none !important;
+  }
+}
+
+/* Decorative loops only need compositor time while their section is visible. */
+[data-kd-in-view="false"] :is(.team-avatar-ring-one, .team-avatar-ring-two, .about-logo, .kd-blog-loop, .kd-portfolio-loop),
+html.kd-page-hidden :is(.team-avatar-ring-one, .team-avatar-ring-two, .about-logo, .kd-blog-loop, .kd-portfolio-loop, .hero-welcome-text) {
+  animation-play-state: paused !important;
+  will-change: auto !important;
+}
+@media (max-width: 900px) {
+  html.kd-premium :is(.site-header .nav-shell, .nav-overlay-mobile, .article-mobile-overlay) {
+    backdrop-filter: none !important;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  html.kd-premium { scroll-behavior: auto !important; }
+  #kd-scroll-progress { display: none !important; }
+  :is(#root, body.kd-article-page, .page-shell, #appShell, #loginScreen, #dialogBackdrop, #confirmBackdrop, #profileBackdrop) *,
+  :is(#root, body.kd-article-page, .page-shell, #appShell) *::before,
+  :is(#root, body.kd-article-page, .page-shell, #appShell) *::after {
+    scroll-behavior: auto !important;
+    animation-duration: .01ms !important; animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+  }
+  :is(#root, body.kd-article-page, .page-shell, #appShell)
+    :is(.button, .btn, .cta-pill, .pricing-cta, .portfolio-cta, .blog-cta, .service-cta, .contact-cta-button, .form-submit, .article-nav-cta, .app-install-button, .pricing-download-trigger, .quick-link, .about-info-card, .info-card, .team-card, .service-card, .pricing-card-reference, .portfolio-card, .thumb-card, .blog-card, .faq-item, .contact-card, .contact-social-card, .route-card, .route-article-card):hover {
+    translate: none !important; transform: none !important;
+  }
+}

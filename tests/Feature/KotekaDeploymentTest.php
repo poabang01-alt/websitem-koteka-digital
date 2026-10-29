@@ -46,7 +46,7 @@ class KotekaDeploymentTest extends TestCase
         $this->putJson('/api/workspace-content', ['content' => $changed, 'version' => 1])->assertOk();
 
         $this->getJson('/api/workspace-content')->assertJsonPath('content.home.title', 'Public')
-            ->assertJsonPath('content.home.settings.first', '01')->assertJsonCount(0, 'content.blogPosts');
+            ->assertJsonPath('content.home.settings.first', '01')->assertJsonMissingPath('content.blogPosts');
         $this->assertDatabaseCount('koteka_content_revisions', 2);
     }
 

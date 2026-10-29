@@ -17,6 +17,22 @@ final class KotekaSecurityHeaders
 {
     public function handle(Request $request, Closure $next): Response
     {
+        $production = app()->environment('production');
+        if ($production) {
+            config(['app.debug' => false, 'session.secure' => true, 'session.http_only' => true, 'session.same_site' => 'lax']);
+            $origin = parse_url((string) config('app.url'));
+            if (! is_array($origin) || ($origin['scheme'] ?? '') !== 'https' || empty($origin['host'])) {
+                return response('Service unavailable.', 503);
+            }
+            if (strcasecmp($request->getHost(), $origin['host']) !== 0) {
+                return response('Invalid host.', 400);
+            }
+            if (! $request->isSecure()) {
+                $authority = $origin['host'].(isset($origin['port']) ? ':'.$origin['port'] : '');
+
+                return redirect()->away('https://'.$authority.$request->getRequestUri(), 308);
+            }
+        }
         /** @var Response $response */
         $response = $next($request);
 
@@ -24,13 +40,20 @@ final class KotekaSecurityHeaders
         $response->headers->set('X-Content-Type-Options', 'nosniff');
         $response->headers->set('X-Frame-Options', 'DENY');
         $response->headers->set('Referrer-Policy', 'strict-origin-when-cross-origin');
+        $response->headers->set('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');
+        if ($production && $request->isSecure()) {
+            $response->headers->set('Strict-Transport-Security', 'max-age=31536000');
+        }
+        if ($request->is('api/*')) {
+            $response->headers->set('Cache-Control', 'private, no-store');
+        }
 
         $contentType = strtolower((string) $response->headers->get('Content-Type', ''));
         if (str_starts_with($contentType, 'text/html')) {
             // Enforced, deliberately small, compatible with existing inline JS/CSS.
             $response->headers->set(
                 'Content-Security-Policy',
-                "base-uri 'self'; object-src 'none'; frame-ancestors 'none'"
+                "base-uri 'self'; object-src 'none'; frame-ancestors 'none'; form-action 'self'"
             );
 
             // Future stricter policy is observational ONLY. Check Chrome CSP
@@ -38,20 +61,18 @@ final class KotekaSecurityHeaders
             $response->headers->set(
                 'Content-Security-Policy-Report-Only',
                 "default-src 'self'; "
-                . "script-src 'self' 'unsafe-inline' https:; "
-                . "style-src 'self' 'unsafe-inline' https:; "
-                . "img-src 'self' https: data: blob:; "
-                . "font-src 'self' https: data:; "
-                . "connect-src 'self' https: wss:; "
-                . "frame-src 'self' https:; "
-                . "worker-src 'self' blob:; "
-                . "form-action 'self' https:; "
-                . "object-src 'none'; base-uri 'self'; frame-ancestors 'none'"
+                ."script-src 'self' 'unsafe-inline' https:; "
+                ."style-src 'self' 'unsafe-inline' https:; "
+                ."img-src 'self' https: data: blob:; "
+                ."font-src 'self' https: data:; "
+                ."connect-src 'self' https: wss:; "
+                ."frame-src 'self' https:; "
+                ."worker-src 'self' blob:; "
+                ."form-action 'self' https:; "
+                ."object-src 'none'; base-uri 'self'; frame-ancestors 'none'"
             );
         }
 
-        // HSTS intentionally omitted on HTTP localhost. Enable it only after
-        // HTTPS, reverse-proxy trust and any subdomain effects are validated.
         return $response;
     }
 }

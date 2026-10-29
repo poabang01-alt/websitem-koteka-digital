@@ -1,7 +1,7 @@
 import './koteka-workspace-sync.js';
 import { redirectErrorPreview } from './public-entry.js';
 const previewRedirected = redirectErrorPreview(window.location, new URL('../', import.meta.url).href);
-window.KotekaWorkspace.startTracking();
+
 const __vite__mapDeps = (
   i,
   m = __vite__mapDeps,
@@ -116,14 +116,7 @@ function a() {
     i
   );
 }
-(`serviceWorker` in navigator &&
-  window.addEventListener(
-    `load`,
-    () => {
-      navigator.serviceWorker.register(new URL('../sw.js', import.meta.url).href).catch(() => {});
-    },
-    { once: !0 }
-  ),
+(
   window.addEventListener(`pointerdown`, a, { once: !0, passive: !0 }),
   window.addEventListener(`keydown`, a, { once: !0, passive: !0 }),
   window.addEventListener(`touchstart`, a, { once: !0, passive: !0 }),

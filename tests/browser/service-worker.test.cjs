@@ -61,7 +61,7 @@ function worker() {
 }
 
 test('mutable CSS and JS refresh even when an old worker cache entry exists', async () => {
-  for (const path of ['/assets/koteka-public-mobile-audit-20261023.css', '/assets/kd-icons-loader-20261010.js', '/assets/koteka-editorial20.css', '/assets/koteka-server-analytics.js', '/assets/home-critical.css']) {
+  for (const path of ['/assets/koteka-public-mobile-audit-20261023.css', '/assets/kd-icons-loader-20261010.js', '/assets/koteka-editorial20.css', '/assets/koteka-server-analytics.js', '/assets/koteka-interactions.css', '/assets/index-B3BNhf1J.js', '/assets/appBoot-634c31a5ba.js', '/assets/Reveal-a4c48c8478.js', '/assets/PricingSectionContainer-CyXKa1Eh.js', '/assets/kd-37f189b118.js', '/assets/kd-de0747668b.css']) {
     const app = worker();
     await app.seed(path);
 
@@ -73,7 +73,7 @@ test('mutable CSS and JS refresh even when an old worker cache entry exists', as
 });
 
 test('generated hashed assets reuse a warm cache without another download', async () => {
-  for (const path of ['/assets/appBoot-634c31a5ba.js', '/assets/react-DHmoMYoq.js', '/assets/ContactSectionContainer-DXOfP6-K.js']) {
+  for (const path of ['/assets/MotionProvider-BNIh4yWc.js', '/assets/react-DHmoMYoq.js', '/assets/ContactSectionContainer-DXOfP6-K.js']) {
     const app = worker();
     await app.seed(path);
 
